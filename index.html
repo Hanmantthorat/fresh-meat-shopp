@@ -208,27 +208,77 @@
             <div class="space-y-1">
                 <label class="text-xs font-bold text-slate-600">Payment Option</label>
                 <select id="paymentMethod" onchange="updateCheckoutButtonText()" class="w-full text-xs p-2 border rounded bg-white font-semibold">
-                    <option value="online">Pay Online / UPI (8208963102 / Razorpay)</option>
+                    <option value="online">Pay Online / UPI (8208963102 / GPay / PhonePe / QR)</option>
                     <option value="cod">Cash / UPI on Delivery (COD)</option>
                 </select>
             </div>
 
-            <!-- Online Payment UPI Display Info -->
+            <!-- Online Payment Info Banner -->
             <div id="onlineUpiInfo" class="bg-amber-50 border border-amber-300 rounded p-2 text-xs text-amber-900 space-y-1">
                 <div class="flex items-center space-x-1.5 font-bold text-amber-950">
-                    <i class="fa-solid fa-mobile-retro text-maroon"></i>
-                    <span>Pay via Phone / UPI Number:</span>
+                    <i class="fa-solid fa-shield-halal text-maroon"></i>
+                    <span>Online Payment Security</span>
                 </div>
-                <div class="flex items-center justify-between bg-white px-2 py-1 rounded border border-amber-200">
-                    <span id="upiPhoneDisplay" class="font-black text-maroon text-sm">8208963102</span>
-                    <span class="text-[10px] bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded font-semibold">GPay / PhonePe / Paytm / UPI</span>
-                </div>
+                <p class="text-[11px] text-slate-600">
+                    You will pay via UPI (8208963102) or Razorpay Gateway. Order is placed <strong>ONLY AFTER SUCCESSFUL PAYMENT</strong>.
+                </p>
             </div>
 
             <button id="checkoutBtn" onclick="handleCheckout()" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-lg shadow-lg flex items-center justify-center space-x-2 transition">
                 <i class="fa-solid fa-lock text-lg" id="btnIcon"></i>
-                <span id="btnText">Pay & Confirm Order</span>
+                <span id="btnText">Proceed to Online Payment</span>
             </button>
+        </div>
+    </div>
+
+    <!-- ONLINE PAYMENT MODAL GATEWAY -->
+    <div id="paymentModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 relative animate-fade-in border border-amber-200">
+            <!-- Modal Close Button -->
+            <button onclick="closePaymentModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 text-xl font-bold">&times;</button>
+            
+            <div class="text-center space-y-3">
+                <div class="inline-flex items-center justify-center w-12 h-12 bg-green-100 text-green-600 rounded-full">
+                    <i class="fa-solid fa-qrcode text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-black text-slate-800">Scan & Pay via UPI</h3>
+                <p class="text-xs text-slate-500">Pay directly to vendor number <span class="font-bold text-maroon">8208963102</span></p>
+                
+                <!-- Display Total -->
+                <div class="bg-slate-50 border rounded-xl p-3 my-2">
+                    <span class="text-xs text-slate-500 block">Total Amount to Pay</span>
+                    <span id="modalPayAmount" class="text-3xl font-black text-maroon">₹0</span>
+                </div>
+
+                <!-- QR Code Box -->
+                <div class="flex flex-col items-center justify-center space-y-2 py-2">
+                    <img id="upiQrCodeImg" src="" alt="UPI Payment QR" class="w-48 h-48 border-2 border-slate-200 rounded-xl shadow-sm">
+                    <p class="text-[11px] text-slate-500 font-semibold">Scan with GPay, PhonePe, Paytm or BHIM</p>
+                </div>
+
+                <!-- Direct UPI App Button -->
+                <a id="directUpiLink" href="#" class="block w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-xl text-xs shadow transition">
+                    <i class="fa-solid fa-mobile-screen-button mr-1"></i> Open in Installed UPI App
+                </a>
+
+                <div class="relative flex py-1 items-center">
+                    <div class="flex-grow border-t border-slate-200"></div>
+                    <span class="flex-shrink mx-2 text-[10px] text-slate-400 font-bold uppercase">After Payment Done</span>
+                    <div class="flex-grow border-t border-slate-200"></div>
+                </div>
+
+                <!-- Transaction Reference Input -->
+                <div class="text-left space-y-1">
+                    <label class="text-xs font-bold text-slate-700">Enter UPI Transaction ID / UTR (12 digits)</label>
+                    <input type="text" id="transactionIdInput" placeholder="e.g. 423456789012" class="w-full text-xs p-2.5 border border-slate-300 rounded-lg focus:outline-none focus:border-green-600 font-mono">
+                </div>
+
+                <!-- Submit Button -->
+                <button onclick="verifyAndPlaceOrder()" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl shadow-lg flex items-center justify-center space-x-2 transition text-sm">
+                    <i class="fa-solid fa-circle-check text-lg"></i>
+                    <span>Confirm Payment & Place Order</span>
+                </button>
+            </div>
         </div>
     </div>
 
@@ -265,10 +315,8 @@
             localStorage.setItem('meatfresh_phone', shopPhoneNumber);
             const headerInput = document.getElementById('shopPhoneHeader');
             const cartInput = document.getElementById('shopPhoneCart');
-            const upiDisplay = document.getElementById('upiPhoneDisplay');
             if (headerInput) headerInput.value = shopPhoneNumber;
             if (cartInput) cartInput.value = shopPhoneNumber;
-            if (upiDisplay) upiDisplay.innerText = shopPhoneNumber.length > 10 ? shopPhoneNumber.slice(-10) : shopPhoneNumber;
         }
 
         function renderProducts(items) {
@@ -432,11 +480,11 @@
             const onlineUpiInfo = document.getElementById('onlineUpiInfo');
 
             if (method === 'online') {
-                btnText.innerText = 'Pay Online / UPI & Confirm Order';
-                btnIcon.className = 'fa-solid fa-lock text-lg';
+                btnText.innerText = 'Proceed to Online Payment';
+                btnIcon.className = 'fa-solid fa-credit-card text-lg';
                 if (onlineUpiInfo) onlineUpiInfo.classList.remove('hidden');
             } else {
-                btnText.innerText = 'Send Order via WhatsApp (COD)';
+                btnText.innerText = 'Place Order via WhatsApp (COD)';
                 btnIcon.className = 'fa-brands fa-whatsapp text-xl';
                 if (onlineUpiInfo) onlineUpiInfo.classList.add('hidden');
             }
@@ -465,58 +513,56 @@
             const paymentMethod = document.getElementById('paymentMethod').value;
 
             if (paymentMethod === 'online') {
-                processOnlinePayment(customerName, customerPhone);
+                openPaymentModal();
             } else {
                 sendVendorWhatsAppOrder('UNPAID (Cash / UPI on Delivery)');
             }
         }
 
-        // TRIGGER RAZORPAY GATEWAY
-        function processOnlinePayment(cName, cPhone) {
+        // OPEN ONLINE PAYMENT MODAL GATEWAY
+        function openPaymentModal() {
             const subtotal = cart.reduce((acc, i) => acc + (i.unitPrice * i.qty), 0);
-            const totalAmount = subtotal + 0; // Subtotal + Free Delivery
+            const totalAmount = subtotal + 0;
+            const upiNumber = shopPhoneNumber.slice(-10) || "8208963102";
+            const upiId = `${upiNumber}@upi`;
 
-            const options = {
-                "key": RAZORPAY_KEY_ID,
-                "amount": totalAmount * 100, // Amount in paise
-                "currency": "INR",
-                "name": "MeatFresh Pune",
-                "description": `Meat Order Payment for ${cName}`,
-                "prefill": {
-                    "name": cName,
-                    "contact": cPhone || "8208963102"
-                },
-                "notes": {
-                    "merchant_phone": shopPhoneNumber || "8208963102"
-                },
-                "handler": function (response) {
-                    // EXECUTED ONLY IF PAYMENT IS VERIFIED SUCCESSFUL
-                    const paymentId = response.razorpay_payment_id;
-                    
-                    alert(`✅ Payment Successful!\nPayment ID: ${paymentId}\nPaid to Mobile / Vendor Number: ${shopPhoneNumber.slice(-10)}\n\nClick OK to send order & payment proof to vendor via WhatsApp.`);
+            document.getElementById('modalPayAmount').innerText = `₹${totalAmount}`;
 
-                    // Send order + payment proof to Vendor via WhatsApp
-                    sendVendorWhatsAppOrder(`PAID ONLINE ✅\n📱 *Paid To Number:* ${shopPhoneNumber.slice(-10)}\n💳 *Payment Proof / TXN ID:* ${paymentId}`);
+            // Build UPI Payment String
+            const upiString = `upi://pay?pa=${upiId}&pn=MeatFresh%20Pune&am=${totalAmount}&cu=INR&tn=MeatFresh%20Order`;
+            
+            // Set QR Code Image via Google Chart API
+            document.getElementById('upiQrCodeImg').src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(upiString)}`;
+            
+            // Set Direct App Link
+            document.getElementById('directUpiLink').href = upiString;
 
-                    // Clear cart after placement
-                    cart = [];
-                    saveCartAndUI();
-                },
-                "modal": {
-                    "ondismiss": function() {
-                        alert('⚠️ Payment was canceled or closed. Order was NOT placed.');
-                    }
-                },
-                "theme": { "color": "#8B0000" }
-            };
+            document.getElementById('paymentModal').classList.remove('hidden');
+        }
 
-            const rzp = new Razorpay(options);
+        function closePaymentModal() {
+            document.getElementById('paymentModal').classList.add('hidden');
+        }
 
-            rzp.on('payment.failed', function (response) {
-                alert(`❌ Payment Failed: ${response.error.description}\nOrder was NOT placed.`);
-            });
+        // VERIFY PAYMENT TRANSACTION ID AND PLACE ORDER ONLY AFTER SUCCESS
+        function verifyAndPlaceOrder() {
+            const txnId = document.getElementById('transactionIdInput').value.trim();
+            if (!txnId || txnId.length < 6) {
+                alert('Please enter a valid UPI Transaction ID / UTR number (at least 6-12 digits) after completing payment.');
+                return;
+            }
 
-            rzp.open();
+            // Close Modal & Trigger WhatsApp Order Placement
+            closePaymentModal();
+            
+            alert(`✅ Payment Confirmed!\nTransaction Ref ID: ${txnId}\n\nClick OK to place your order on WhatsApp with Payment Proof.`);
+
+            sendVendorWhatsAppOrder(`PAID ONLINE ✅\n📱 *Paid To:* 8208963102\n💳 *Transaction ID / UTR:* ${txnId}`);
+
+            // Clear Cart
+            cart = [];
+            saveCartAndUI();
+            document.getElementById('transactionIdInput').value = '';
         }
 
         // SEND WHATSAPP MESSAGE TO VENDOR WITH PROOF

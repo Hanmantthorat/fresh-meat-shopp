@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MeatFresh - Premium Chicken & Mutton Shop</title>
+    <title>MeatFresh - Premium Chicken & Mutton Shop (Pune)</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Razorpay Checkout SDK -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <style>
         .bg-maroon { background-color: #8B0000; }
         .text-maroon { color: #8B0000; }
@@ -42,9 +44,9 @@
     <section class="bg-gradient-to-r from-red-900 to-maroon text-white py-10 px-4 shadow-inner">
         <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
             <div class="space-y-3 text-center md:text-left">
-                <span class="bg-amber-400 text-red-950 px-3 py-1 rounded-full text-xs font-black tracking-wider uppercase">100% Halal & Fresh</span>
+                <span class="bg-amber-400 text-red-950 px-3 py-1 rounded-full text-xs font-black tracking-wider uppercase">100% Halal & Fresh • Pune Express</span>
                 <h1 class="text-3xl md:text-5xl font-black leading-tight">Farm Fresh Chicken & Tender Mutton</h1>
-                <p class="text-red-100 text-sm md:text-base max-w-lg">Antibiotic-free, chemical-free meat processed in hygienic temperature-controlled environments.</p>
+                <p class="text-red-100 text-sm md:text-base max-w-lg">Delivering to Hadapsar, Wakad, Hinjewadi, Swargate, Sinhgad Rd, Kharadi & Wagholi.</p>
             </div>
             <!-- Quality Badges -->
             <div class="grid grid-cols-2 gap-3 text-xs w-full md:w-auto">
@@ -54,7 +56,7 @@
                 </div>
                 <div class="bg-white/10 p-3 rounded-lg flex items-center space-x-2 backdrop-blur-sm border border-white/10">
                     <i class="fa-solid fa-truck-fast text-amber-400 text-xl"></i>
-                    <span>Express 30-Min Delivery</span>
+                    <span>30-Min Pune Delivery</span>
                 </div>
                 <div class="bg-white/10 p-3 rounded-lg flex items-center space-x-2 backdrop-blur-sm border border-white/10">
                     <i class="fa-solid fa-snowflake text-amber-400 text-xl"></i>
@@ -95,7 +97,7 @@
         </div>
 
         <div class="p-4 bg-amber-50 text-xs border-b border-amber-200 text-amber-900 flex justify-between items-center">
-            <span><i class="fa-solid fa-truck-ramp-box mr-1"></i> Delivery phone for order:</span>
+            <span><i class="fa-brands fa-whatsapp text-green-600 mr-1 text-sm"></i> Shop WhatsApp Phone:</span>
             <input type="text" id="shopPhoneCart" value="918208963102" oninput="updateShopPhone(this.value)" class="bg-white border px-2 py-0.5 rounded font-bold w-32 text-right">
         </div>
 
@@ -119,7 +121,31 @@
                 </div>
             </div>
 
-            <div class="space-y-2">
+            <!-- Serviceable Location Selector -->
+            <div class="space-y-1">
+                <label class="text-xs font-bold text-slate-600">Select Serviceable Area</label>
+                <select id="deliveryLocation" onchange="checkLocationServicability()" class="w-full text-xs p-2 border rounded bg-white font-semibold focus:outline-none focus:border-maroon">
+                    <option value="">-- Choose Your Area in Pune --</option>
+                    <option value="Hadapsar">Hadapsar</option>
+                    <option value="Wakad">Wakad</option>
+                    <option value="Hinjewadi">Hinjewadi</option>
+                    <option value="Swargate">Swargate</option>
+                    <option value="Sinhgad Rd">Sinhgad Rd</option>
+                    <option value="Kharadi">Kharadi</option>
+                    <option value="Wagholi">Wagholi</option>
+                    <option value="other">Other Area (Check Availability)</option>
+                </select>
+                <div id="locationAlert" class="hidden text-xs p-2 rounded font-semibold"></div>
+            </div>
+
+            <!-- Customer Details Input -->
+            <div class="space-y-1">
+                <label class="text-xs font-bold text-slate-600">Full Address & Mobile Number</label>
+                <textarea id="customerAddress" rows="2" placeholder="Flat No., Building/Society, Landmark & Contact No." class="w-full text-xs p-2 border rounded focus:outline-none focus:border-maroon"></textarea>
+            </div>
+
+            <!-- Delivery Slot Selector -->
+            <div class="space-y-1">
                 <label class="text-xs font-bold text-slate-600">Delivery Slot</label>
                 <select id="deliverySlot" class="w-full text-xs p-2 border rounded bg-white">
                     <option>Express 30-Min Delivery (Immediate)</option>
@@ -128,14 +154,18 @@
                 </select>
             </div>
 
-            <div class="space-y-2">
-                <label class="text-xs font-bold text-slate-600">Delivery Address & Phone</label>
-                <textarea id="customerDetails" rows="2" placeholder="Enter Full Name, Delivery Address & Mobile No." class="w-full text-xs p-2 border rounded focus:outline-none focus:border-maroon"></textarea>
+            <!-- Payment Method Selector -->
+            <div class="space-y-1">
+                <label class="text-xs font-bold text-slate-600">Payment Option</label>
+                <select id="paymentMethod" class="w-full text-xs p-2 border rounded bg-white font-semibold">
+                    <option value="cod">Cash / UPI on Delivery (COD)</option>
+                    <option value="online">Pay Online Now (Razorpay / UPI / Card)</option>
+                </select>
             </div>
 
-            <button onclick="sendOrderWhatsApp()" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-lg shadow-lg flex items-center justify-center space-x-2 transition">
+            <button onclick="handleCheckout()" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-lg shadow-lg flex items-center justify-center space-x-2 transition">
                 <i class="fa-brands fa-whatsapp text-xl"></i>
-                <span>Send Order via WhatsApp</span>
+                <span>Proceed & Send Order</span>
             </button>
         </div>
     </div>
@@ -150,21 +180,28 @@
             { id: 6, name: "Sunday Family Feast Combo", category: "combos", basePrice: 950, image: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=500", cuts: ["Standard Combo Pack"] }
         ];
 
+        const SERVICABLE_LOCATIONS = ["Hadapsar", "Wakad", "Hinjewadi", "Swargate", "Sinhgad Rd", "Kharadi", "Wagholi"];
+        const RAZORPAY_KEY_ID = "rzp_test_YourKeyHere"; // Replace with your Razorpay Key ID
+
         let cart = JSON.parse(localStorage.getItem('meatfresh_cart')) || [];
         let shopPhoneNumber = localStorage.getItem('meatfresh_phone') || "918208963102";
 
         window.onload = () => {
-            document.getElementById('shopPhoneHeader').value = shopPhoneNumber;
-            document.getElementById('shopPhoneCart').value = shopPhoneNumber;
+            updateShopPhone(shopPhoneNumber);
             renderProducts(products);
             updateCartUI();
         };
 
         function updateShopPhone(val) {
-            shopPhoneNumber = val.replace(/[^0-9]/g, '');
+            let cleaned = val.replace(/\D/g, '');
+            if (cleaned.startsWith('0')) cleaned = cleaned.substring(1);
+            shopPhoneNumber = cleaned || "918208963102";
+            
             localStorage.setItem('meatfresh_phone', shopPhoneNumber);
-            document.getElementById('shopPhoneHeader').value = shopPhoneNumber;
-            document.getElementById('shopPhoneCart').value = shopPhoneNumber;
+            const headerInput = document.getElementById('shopPhoneHeader');
+            const cartInput = document.getElementById('shopPhoneCart');
+            if (headerInput) headerInput.value = shopPhoneNumber;
+            if (cartInput) cartInput.value = shopPhoneNumber;
         }
 
         function renderProducts(items) {
@@ -297,18 +334,79 @@
             else drawer.classList.toggle('translate-x-full');
         }
 
-        function sendOrderWhatsApp() {
+        function checkLocationServicability() {
+            const selectedArea = document.getElementById('deliveryLocation').value;
+            const alertBox = document.getElementById('locationAlert');
+
+            if (!selectedArea) {
+                alertBox.classList.add('hidden');
+                return false;
+            }
+
+            if (selectedArea === 'other') {
+                alertBox.className = "text-xs p-2 rounded font-semibold bg-red-100 text-red-800 border border-red-300 block";
+                alertBox.innerHTML = `<i class="fa-solid fa-triangle-exclamation mr-1"></i> Sorry! We currently only deliver to Hadapsar, Wakad, Hinjewadi, Swargate, Sinhgad Rd, Kharadi, and Wagholi.`;
+                return false;
+            }
+
+            if (SERVICABLE_LOCATIONS.includes(selectedArea)) {
+                alertBox.className = "text-xs p-2 rounded font-semibold bg-green-100 text-green-800 border border-green-300 block";
+                alertBox.innerHTML = `<i class="fa-solid fa-circle-check mr-1"></i> Great news! Express delivery is available for ${selectedArea}.`;
+                return true;
+            }
+
+            return false;
+        }
+
+        function handleCheckout() {
             if (cart.length === 0) {
                 alert('Please add items to your cart first!');
                 return;
             }
 
-            const customerDetails = document.getElementById('customerDetails').value.trim();
-            if (!customerDetails) {
-                alert('Please provide your Delivery Address & Mobile Number.');
+            const selectedArea = document.getElementById('deliveryLocation').value;
+            if (!selectedArea || !checkLocationServicability()) {
+                alert('Please select a valid serviceable location (Hadapsar, Wakad, Hinjewadi, Swargate, Sinhgad Rd, Kharadi, or Wagholi).');
                 return;
             }
 
+            const customerAddress = document.getElementById('customerAddress').value.trim();
+            if (!customerAddress) {
+                alert('Please enter your full address and mobile number.');
+                return;
+            }
+
+            const paymentMethod = document.getElementById('paymentMethod').value;
+            if (paymentMethod === 'online') {
+                payOnlineAndSendWhatsApp();
+            } else {
+                sendOrderWhatsApp('Cash / UPI on Delivery (COD)');
+            }
+        }
+
+        function payOnlineAndSendWhatsApp() {
+            const subtotal = cart.reduce((acc, i) => acc + (i.unitPrice * i.qty), 0);
+            const totalAmount = subtotal + 30;
+
+            const options = {
+                "key": RAZORPAY_KEY_ID,
+                "amount": totalAmount * 100, // in paise
+                "currency": "INR",
+                "name": "MeatFresh Pune",
+                "description": "Meat Order Payment",
+                "handler": function (response) {
+                    sendOrderWhatsApp(`Paid Online (ID: ${response.razorpay_payment_id})`);
+                },
+                "theme": { "color": "#8B0000" }
+            };
+
+            const rzp = new Razorpay(options);
+            rzp.open();
+        }
+
+        function sendOrderWhatsApp(paymentInfo) {
+            const selectedArea = document.getElementById('deliveryLocation').value;
+            const customerAddress = document.getElementById('customerAddress').value.trim();
             const slot = document.getElementById('deliverySlot').value;
             const subtotal = cart.reduce((acc, i) => acc + (i.unitPrice * i.qty), 0);
             const total = subtotal + 30;
@@ -321,12 +419,15 @@
             message += `------------------------------------\n`;
             message += `*Subtotal:* ₹${subtotal}\n`;
             message += `*Delivery Fee:* ₹30\n`;
-            message += `*Total Payable:* ₹${total}\n\n`;
+            message += `*Total Amount:* ₹${total}\n\n`;
+            message += `💳 *Payment Option:* ${paymentInfo}\n`;
             message += `🕒 *Delivery Slot:* ${slot}\n`;
-            message += `📍 *Customer Details:*\n${customerDetails}\n`;
+            message += `📍 *Delivery Area:* ${selectedArea}\n`;
+            message += `🏠 *Customer Address & Mobile:* ${customerAddress}\n`;
 
+            const cleanPhone = shopPhoneNumber.replace(/\D/g, '');
             const encodedMessage = encodeURIComponent(message);
-            window.open(`https://api.whatsapp.com/send?phone=${shopPhoneNumber}&text=${encodedMessage}`, '_blank');
+            window.open(`https://wa.me/${cleanPhone}?text=${encodedMessage}`, '_blank');
         }
     </script>
 </body>

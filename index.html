@@ -190,7 +190,8 @@
             <div class="space-y-1">
                 <label class="text-xs font-bold text-slate-600">Customer Details</label>
                 <input type="text" id="customerName" placeholder="Customer Full Name" class="w-full text-xs p-2 border rounded mb-1 focus:outline-none focus:border-maroon">
-                <textarea id="customerAddress" rows="2" placeholder="Flat No., Building/Society, Landmark & Contact No." class="w-full text-xs p-2 border rounded focus:outline-none focus:border-maroon"></textarea>
+                <input type="tel" id="customerPhone" placeholder="Mobile / WhatsApp Number (e.g. 8208963102)" class="w-full text-xs p-2 border rounded mb-1 focus:outline-none focus:border-maroon">
+                <textarea id="customerAddress" rows="2" placeholder="Flat No., Building/Society & Landmark" class="w-full text-xs p-2 border rounded focus:outline-none focus:border-maroon"></textarea>
             </div>
 
             <!-- Delivery Slot Selector -->
@@ -207,9 +208,21 @@
             <div class="space-y-1">
                 <label class="text-xs font-bold text-slate-600">Payment Option</label>
                 <select id="paymentMethod" onchange="updateCheckoutButtonText()" class="w-full text-xs p-2 border rounded bg-white font-semibold">
-                    <option value="online">Pay Online Now (Razorpay / UPI / Card)</option>
+                    <option value="online">Pay Online / UPI (8208963102 / Razorpay)</option>
                     <option value="cod">Cash / UPI on Delivery (COD)</option>
                 </select>
+            </div>
+
+            <!-- Online Payment UPI Display Info -->
+            <div id="onlineUpiInfo" class="bg-amber-50 border border-amber-300 rounded p-2 text-xs text-amber-900 space-y-1">
+                <div class="flex items-center space-x-1.5 font-bold text-amber-950">
+                    <i class="fa-solid fa-mobile-retro text-maroon"></i>
+                    <span>Pay via Phone / UPI Number:</span>
+                </div>
+                <div class="flex items-center justify-between bg-white px-2 py-1 rounded border border-amber-200">
+                    <span id="upiPhoneDisplay" class="font-black text-maroon text-sm">8208963102</span>
+                    <span class="text-[10px] bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded font-semibold">GPay / PhonePe / Paytm / UPI</span>
+                </div>
             </div>
 
             <button id="checkoutBtn" onclick="handleCheckout()" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-lg shadow-lg flex items-center justify-center space-x-2 transition">
@@ -252,8 +265,10 @@
             localStorage.setItem('meatfresh_phone', shopPhoneNumber);
             const headerInput = document.getElementById('shopPhoneHeader');
             const cartInput = document.getElementById('shopPhoneCart');
+            const upiDisplay = document.getElementById('upiPhoneDisplay');
             if (headerInput) headerInput.value = shopPhoneNumber;
             if (cartInput) cartInput.value = shopPhoneNumber;
+            if (upiDisplay) upiDisplay.innerText = shopPhoneNumber.length > 10 ? shopPhoneNumber.slice(-10) : shopPhoneNumber;
         }
 
         function renderProducts(items) {
@@ -414,13 +429,16 @@
             const method = document.getElementById('paymentMethod').value;
             const btnText = document.getElementById('btnText');
             const btnIcon = document.getElementById('btnIcon');
+            const onlineUpiInfo = document.getElementById('onlineUpiInfo');
 
             if (method === 'online') {
-                btnText.innerText = 'Pay Online & Confirm Order';
+                btnText.innerText = 'Pay Online / UPI & Confirm Order';
                 btnIcon.className = 'fa-solid fa-lock text-lg';
+                if (onlineUpiInfo) onlineUpiInfo.classList.remove('hidden');
             } else {
                 btnText.innerText = 'Send Order via WhatsApp (COD)';
                 btnIcon.className = 'fa-brands fa-whatsapp text-xl';
+                if (onlineUpiInfo) onlineUpiInfo.classList.add('hidden');
             }
         }
 
@@ -437,23 +455,24 @@
             }
 
             const customerName = document.getElementById('customerName').value.trim();
+            const customerPhone = document.getElementById('customerPhone').value.trim();
             const customerAddress = document.getElementById('customerAddress').value.trim();
-            if (!customerName || !customerAddress) {
-                alert('Please fill out your Name, Address and Mobile Number.');
+            if (!customerName || !customerPhone || !customerAddress) {
+                alert('Please fill out your Name, Mobile Number, and Delivery Address.');
                 return;
             }
 
             const paymentMethod = document.getElementById('paymentMethod').value;
 
             if (paymentMethod === 'online') {
-                processOnlinePayment();
+                processOnlinePayment(customerName, customerPhone);
             } else {
                 sendVendorWhatsAppOrder('UNPAID (Cash / UPI on Delivery)');
             }
         }
 
         // TRIGGER RAZORPAY GATEWAY
-        function processOnlinePayment() {
+        function processOnlinePayment(cName, cPhone) {
             const subtotal = cart.reduce((acc, i) => acc + (i.unitPrice * i.qty), 0);
             const totalAmount = subtotal + 0; // Subtotal + Free Delivery
 
@@ -462,15 +481,22 @@
                 "amount": totalAmount * 100, // Amount in paise
                 "currency": "INR",
                 "name": "MeatFresh Pune",
-                "description": "Meat Order Payment",
+                "description": `Meat Order Payment for ${cName}`,
+                "prefill": {
+                    "name": cName,
+                    "contact": cPhone || "8208963102"
+                },
+                "notes": {
+                    "merchant_phone": shopPhoneNumber || "8208963102"
+                },
                 "handler": function (response) {
                     // EXECUTED ONLY IF PAYMENT IS VERIFIED SUCCESSFUL
                     const paymentId = response.razorpay_payment_id;
                     
-                    alert(`✅ Payment Successful!\nPayment ID: ${paymentId}\n\nClick OK to send order & payment proof to vendor via WhatsApp.`);
+                    alert(`✅ Payment Successful!\nPayment ID: ${paymentId}\nPaid to Mobile / Vendor Number: ${shopPhoneNumber.slice(-10)}\n\nClick OK to send order & payment proof to vendor via WhatsApp.`);
 
                     // Send order + payment proof to Vendor via WhatsApp
-                    sendVendorWhatsAppOrder(`PAID ONLINE ✅\n💳 *Payment Proof / TXN ID:* ${paymentId}`);
+                    sendVendorWhatsAppOrder(`PAID ONLINE ✅\n📱 *Paid To Number:* ${shopPhoneNumber.slice(-10)}\n💳 *Payment Proof / TXN ID:* ${paymentId}`);
 
                     // Clear cart after placement
                     cart = [];
@@ -497,6 +523,7 @@
         function sendVendorWhatsAppOrder(paymentProofDetails) {
             const selectedArea = document.getElementById('deliveryLocation').value;
             const customerName = document.getElementById('customerName').value.trim();
+            const customerPhone = document.getElementById('customerPhone').value.trim();
             const customerAddress = document.getElementById('customerAddress').value.trim();
             const slot = document.getElementById('deliverySlot').value;
             const subtotal = cart.reduce((acc, i) => acc + (i.unitPrice * i.qty), 0);
@@ -505,7 +532,8 @@
             let message = `🥩 *NEW CONFIRMED ORDER - MeatFresh*\n`;
             message += `====================================\n`;
             message += `👤 *Customer Name:* ${customerName}\n`;
-            message += `🏠 *Address & Mobile:* ${customerAddress}\n`;
+            message += `📱 *Customer Phone:* ${customerPhone}\n`;
+            message += `🏠 *Address:* ${customerAddress}\n`;
             message += `📍 *Delivery Area:* ${selectedArea}\n`;
             message += `🕒 *Delivery Slot:* ${slot}\n`;
             message += `====================================\n`;

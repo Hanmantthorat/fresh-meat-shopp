@@ -1,866 +1,232 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MeatFresh - Premium Chicken & Mutton Shop (Pune)</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <!-- Razorpay Checkout SDK -->
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-    <style>
-        .bg-maroon { background-color: #8B0000; }
-        .text-maroon { color: #8B0000; }
-        .border-maroon { border-color: #8B0000; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive Task Tracker</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --accent: #38bdf8;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --danger: #f43f5e;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 2rem 1rem;
+    }
+
+    .app-container {
+      background-color: var(--card-bg);
+      border-radius: 12px;
+      padding: 2rem;
+      width: 100%;
+      max-width: 480px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+      height: fit-content;
+    }
+
+    h1 {
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
+      color: var(--accent);
+    }
+
+    .input-group {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      border: 1px solid #334155;
+      background: #0f172a;
+      color: var(--text);
+      outline: none;
+    }
+
+    input[type="text"]:focus {
+      border-color: var(--accent);
+    }
+
+    button.btn-add {
+      background-color: var(--accent);
+      color: #0f172a;
+      border: none;
+      padding: 0.75rem 1.25rem;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    button.btn-add:hover {
+      opacity: 0.9;
+    }
+
+    .task-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .task-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.75rem 1rem;
+      background-color: #0f172a;
+      border-radius: 8px;
+      border: 1px solid #334155;
+    }
+
+    .task-content {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      cursor: pointer;
+    }
+
+    .task-item.completed span {
+      text-decoration: line-through;
+      color: var(--text-muted);
+    }
+
+    .delete-btn {
+      background: none;
+      border: none;
+      color: var(--danger);
+      font-size: 1.2rem;
+      cursor: pointer;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+    }
+
+    .delete-btn:hover {
+      background-color: rgba(244, 63, 94, 0.1);
+    }
+
+    .empty-state {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-top: 1rem;
+    }
+  </style>
 </head>
-<body class="bg-slate-50 text-slate-800 font-sans pb-24">
+<body>
 
-    <!-- Header Navigation -->
-    <header class="bg-maroon text-white sticky top-0 z-40 shadow-lg">
-        <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
-            <div class="flex items-center space-x-2">
-                <i class="fa-solid font-bold text-2xl text-amber-400 fa-drumstick-bite"></i>
-                <span class="text-2xl font-black tracking-wide">Meat<span class="text-amber-400">Fresh</span></span>
-            </div>
-            
-            <!-- WhatsApp Vendor Number Input & Admin Dashboard Trigger -->
-            <div class="flex items-center space-x-3">
-                <div class="hidden sm:flex items-center bg-red-950 px-3 py-1 rounded-full text-xs space-x-2 border border-red-800">
-                    <i class="fa-brands fa-whatsapp text-green-400 text-base"></i>
-                    <span>Vendor Phone:</span>
-                    <input type="text" id="shopPhoneHeader" value="918208963102" oninput="updateShopPhone(this.value)" class="bg-transparent text-amber-300 font-bold w-28 focus:outline-none border-b border-amber-400/40 text-center">
-                </div>
+  <div class="app-container">
+    <h1>Task Tracker</h1>
+    
+    <form class="input-group" id="task-form">
+      <input type="text" id="task-input" placeholder="Add a new task..." required />
+      <button type="submit" class="btn-add">Add</button>
+    </form>
 
-                <!-- Admin Panel Button -->
-                <button onclick="toggleAdminPanel()" class="bg-amber-400 hover:bg-amber-500 text-red-950 px-3 py-1.5 rounded-full flex items-center space-x-1.5 text-xs font-black shadow transition">
-                    <i class="fa-solid fa-chart-line"></i>
-                    <span>Admin Panel</span>
-                </button>
+    <ul class="task-list" id="task-list"></ul>
+    <p class="empty-state" id="empty-state">No tasks yet. Add one above!</p>
+  </div>
 
-                <!-- Cart Trigger Button -->
-                <button onclick="toggleCart()" class="relative bg-red-700 hover:bg-red-800 px-4 py-2 rounded-full flex items-center space-x-2 transition">
-                    <i class="fa-solid fa-cart-shopping"></i>
-                    <span class="font-bold">Cart</span>
-                    <span id="cartBadge" class="bg-amber-400 text-red-950 font-black text-xs px-2 py-0.5 rounded-full">0</span>
-                </button>
-            </div>
-        </div>
-    </header>
+  <script>
+    // State management
+    let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
 
-    <!-- Hero Banner -->
-    <section class="bg-gradient-to-r from-red-900 to-maroon text-white py-10 px-4 shadow-inner">
-        <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
-            <div class="space-y-3 text-center md:text-left">
-                <span class="bg-amber-400 text-red-950 px-3 py-1 rounded-full text-xs font-black tracking-wider uppercase">100% Halal & Fresh • Pune Express</span>
-                <h1 class="text-3xl md:text-5xl font-black leading-tight">Farm Fresh Chicken & Tender Mutton</h1>
-                <p class="text-red-100 text-sm md:text-base max-w-lg">Delivering 30-minute express orders with FREE delivery across select Pune zones.</p>
-            </div>
-            <!-- Quality Badges -->
-            <div class="grid grid-cols-2 gap-3 text-xs w-full md:w-auto">
-                <div class="bg-white/10 p-3 rounded-lg flex items-center space-x-2 backdrop-blur-sm border border-white/10">
-                    <i class="fa-solid fa-shield-halal text-amber-400 text-xl"></i>
-                    <span>100% Halal Certified</span>
-                </div>
-                <div class="bg-white/10 p-3 rounded-lg flex items-center space-x-2 backdrop-blur-sm border border-white/10">
-                    <i class="fa-solid fa-truck-fast text-amber-400 text-xl"></i>
-                    <span>Free 30-Min Delivery</span>
-                </div>
-                <div class="bg-white/10 p-3 rounded-lg flex items-center space-x-2 backdrop-blur-sm border border-white/10">
-                    <i class="fa-solid fa-snowflake text-amber-400 text-xl"></i>
-                    <span>Chilled, Never Frozen</span>
-                </div>
-                <div class="bg-white/10 p-3 rounded-lg flex items-center space-x-2 backdrop-blur-sm border border-white/10">
-                    <i class="fa-solid fa-leaf text-amber-400 text-xl"></i>
-                    <span>Antibiotic & Hormone Free</span>
-                </div>
-            </div>
-        </div>
-    </section>
+    // DOM Elements
+    const taskForm = document.getElementById('task-form');
+    const taskInput = document.getElementById('task-input');
+    const taskList = document.getElementById('task-list');
+    const emptyState = document.getElementById('empty-state');
 
-    <!-- HIGHLIGHTED SEPARATE DELIVERY LOCATIONS BOX -->
-    <section class="max-w-6xl mx-auto px-4 pt-6">
-        <div class="bg-gradient-to-r from-amber-50 to-orange-50 border-2 border-amber-300 rounded-2xl p-5 shadow-sm">
-            <div class="flex items-center space-x-2 mb-3">
-                <i class="fa-solid fa-location-dot text-red-600 text-xl animate-bounce"></i>
-                <h2 class="text-base md:text-lg font-black text-slate-800 uppercase tracking-wide">
-                    We Are Delivering In These Pune Areas:
-                </h2>
-            </div>
-            
-            <!-- Delivery Area Badges Box Grid -->
-            <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2 text-center font-bold text-xs">
-                <div class="bg-white border border-amber-200 text-red-950 py-2 px-3 rounded-xl shadow-xs flex items-center justify-center space-x-1.5 hover:border-red-600 transition">
-                    <i class="fa-solid fa-circle-check text-green-600 text-xs"></i>
-                    <span>Hadapsar</span>
-                </div>
-                <div class="bg-white border border-amber-200 text-red-950 py-2 px-3 rounded-xl shadow-xs flex items-center justify-center space-x-1.5 hover:border-red-600 transition">
-                    <i class="fa-solid fa-circle-check text-green-600 text-xs"></i>
-                    <span>Wakad</span>
-                </div>
-                <div class="bg-white border border-amber-200 text-red-950 py-2 px-3 rounded-xl shadow-xs flex items-center justify-center space-x-1.5 hover:border-red-600 transition">
-                    <i class="fa-solid fa-circle-check text-green-600 text-xs"></i>
-                    <span>Hinjewadi</span>
-                </div>
-                <div class="bg-white border border-amber-200 text-red-950 py-2 px-3 rounded-xl shadow-xs flex items-center justify-center space-x-1.5 hover:border-red-600 transition">
-                    <i class="fa-solid fa-circle-check text-green-600 text-xs"></i>
-                    <span>Swargate</span>
-                </div>
-                <div class="bg-white border border-amber-200 text-red-950 py-2 px-3 rounded-xl shadow-xs flex items-center justify-center space-x-1.5 hover:border-red-600 transition">
-                    <i class="fa-solid fa-circle-check text-green-600 text-xs"></i>
-                    <span>Sinhgad Rd</span>
-                </div>
-                <div class="bg-white border border-amber-200 text-red-950 py-2 px-3 rounded-xl shadow-xs flex items-center justify-center space-x-1.5 hover:border-red-600 transition">
-                    <i class="fa-solid fa-circle-check text-green-600 text-xs"></i>
-                    <span>Kharadi</span>
-                </div>
-                <div class="bg-white border border-amber-200 text-red-950 py-2 px-3 rounded-xl shadow-xs flex items-center justify-center space-x-1.5 hover:border-red-600 transition">
-                    <i class="fa-solid fa-circle-check text-green-600 text-xs"></i>
-                    <span>Wagholi</span>
-                </div>
-            </div>
-            
-            <p class="text-[11px] text-amber-800 font-semibold mt-3 text-center md:text-left">
-                <i class="fa-solid fa-bolt text-amber-600 mr-1"></i> Orders placed from these locations qualify for guaranteed express delivery with zero delivery charges.
-            </p>
-        </div>
-    </section>
+    // Save tasks to Local Storage
+    function saveTasks() {
+      localStorage.setItem('tasks', JSON.stringify(tasks));
+      renderTasks();
+    }
 
-    <!-- Main Shop Container -->
-    <main class="max-w-6xl mx-auto px-4 py-8">
-        <!-- Category Filter Buttons -->
-        <div class="flex space-x-2 overflow-x-auto pb-4 mb-6 scrollbar-none" id="categoryButtons">
-            <button onclick="filterCategory('all', event)" class="cat-btn active bg-maroon text-white px-5 py-2 rounded-full text-sm font-bold shadow-sm whitespace-nowrap">All Items</button>
-            <button onclick="filterCategory('chicken', event)" class="cat-btn bg-white text-slate-700 hover:bg-slate-100 px-5 py-2 rounded-full text-sm font-bold border whitespace-nowrap">Fresh Chicken</button>
-            <button onclick="filterCategory('mutton', event)" class="cat-btn bg-white text-slate-700 hover:bg-slate-100 px-5 py-2 rounded-full text-sm font-bold border whitespace-nowrap">Fresh Mutton</button>
-            <button onclick="filterCategory('combos', event)" class="cat-btn bg-white text-slate-700 hover:bg-slate-100 px-5 py-2 rounded-full text-sm font-bold border whitespace-nowrap">Value Combos</button>
-        </div>
+    // Render tasks on screen
+    function renderTasks() {
+      taskList.innerHTML = '';
+      
+      if (tasks.length === 0) {
+        emptyState.style.display = 'block';
+      } else {
+        emptyState.style.display = 'none';
+      }
 
-        <!-- Product Grid -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="productGrid">
-            <!-- Products render dynamically -->
-        </div>
-    </main>
-
-    <!-- Sliding Shopping Cart Drawer -->
-    <div id="cartDrawer" class="fixed inset-y-0 right-0 w-full sm:w-96 bg-white shadow-2xl transform translate-x-full transition-transform duration-300 z-50 flex flex-col">
-        <div class="bg-maroon text-white p-4 flex justify-between items-center">
-            <div class="flex items-center space-x-2">
-                <i class="fa-solid fa-bag-shopping text-amber-400"></i>
-                <h2 class="text-lg font-bold">Your Fresh Order</h2>
-            </div>
-            <button onclick="toggleCart()" class="text-white hover:text-amber-400 text-xl font-bold">&times;</button>
-        </div>
-
-        <div class="p-4 bg-amber-50 text-xs border-b border-amber-200 text-amber-900 flex justify-between items-center">
-            <span><i class="fa-brands fa-whatsapp text-green-600 mr-1 text-sm"></i> Vendor WhatsApp Number:</span>
-            <input type="text" id="shopPhoneCart" value="918208963102" oninput="updateShopPhone(this.value)" class="bg-white border px-2 py-0.5 rounded font-bold w-32 text-right">
-        </div>
-
-        <div id="cartItems" class="flex-1 overflow-y-auto p-4 space-y-3">
-            <!-- Cart items render dynamically -->
-        </div>
-
-        <div class="p-4 border-t bg-slate-50 space-y-3 overflow-y-auto max-h-[60vh]">
-            <div class="space-y-1 text-sm">
-                <div class="flex justify-between text-slate-600">
-                    <span>Subtotal:</span>
-                    <span id="subtotalPrice">₹0</span>
-                </div>
-                <div class="flex justify-between text-slate-600">
-                    <span>Delivery Charge:</span>
-                    <span id="deliveryPrice" class="text-green-600 font-bold">FREE</span>
-                </div>
-                <div class="flex justify-between font-bold text-lg text-slate-900 border-t pt-2">
-                    <span>Total Amount:</span>
-                    <span id="totalPrice" class="text-maroon">₹0</span>
-                </div>
-            </div>
-
-            <!-- Serviceable Location Selector -->
-            <div class="space-y-1">
-                <label class="text-xs font-bold text-slate-600">Select Serviceable Area</label>
-                <select id="deliveryLocation" onchange="checkLocationServicability()" class="w-full text-xs p-2 border rounded bg-white font-semibold focus:outline-none focus:border-maroon">
-                    <option value="">-- Choose Your Area in Pune --</option>
-                    <option value="Hadapsar">Hadapsar</option>
-                    <option value="Wakad">Wakad</option>
-                    <option value="Hinjewadi">Hinjewadi</option>
-                    <option value="Swargate">Swargate</option>
-                    <option value="Sinhgad Rd">Sinhgad Rd</option>
-                    <option value="Kharadi">Kharadi</option>
-                    <option value="Wagholi">Wagholi</option>
-                    <option value="other">Other Area (Check Availability)</option>
-                </select>
-                <div id="locationAlert" class="hidden text-xs p-2 rounded font-semibold"></div>
-            </div>
-
-            <!-- Customer Details Input -->
-            <div class="space-y-1">
-                <label class="text-xs font-bold text-slate-600">Customer Details</label>
-                <input type="text" id="customerName" placeholder="Customer Full Name" class="w-full text-xs p-2 border rounded mb-1 focus:outline-none focus:border-maroon">
-                <input type="tel" id="customerPhone" placeholder="Mobile / WhatsApp Number (e.g. 8208963102)" class="w-full text-xs p-2 border rounded mb-1 focus:outline-none focus:border-maroon">
-                <textarea id="customerAddress" rows="2" placeholder="Flat No., Building/Society & Landmark" class="w-full text-xs p-2 border rounded focus:outline-none focus:border-maroon"></textarea>
-            </div>
-
-            <!-- Hourly Delivery Slot Selector (4 AM to 11 PM) -->
-            <div class="space-y-1">
-                <label class="text-xs font-bold text-slate-600">Delivery Slot (4:00 AM - 11:00 PM)</label>
-                <select id="deliverySlot" class="w-full text-xs p-2 border rounded bg-white font-medium">
-                    <option value="Immediate Express Delivery">Immediate Express Delivery (Next Available Slot)</option>
-                    <option value="4:00 AM - 5:00 AM">4:00 AM - 5:00 AM</option>
-                    <option value="5:00 AM - 6:00 AM">5:00 AM - 6:00 AM</option>
-                    <option value="6:00 AM - 7:00 AM">6:00 AM - 7:00 AM</option>
-                    <option value="7:00 AM - 8:00 AM">7:00 AM - 8:00 AM</option>
-                    <option value="8:00 AM - 9:00 AM">8:00 AM - 9:00 AM</option>
-                    <option value="9:00 AM - 10:00 AM">9:00 AM - 10:00 AM</option>
-                    <option value="10:00 AM - 11:00 AM">10:00 AM - 11:00 AM</option>
-                    <option value="11:00 AM - 12:00 PM">11:00 AM - 12:00 PM</option>
-                    <option value="12:00 PM - 1:00 PM">12:00 PM - 1:00 PM</option>
-                    <option value="1:00 PM - 2:00 PM">1:00 PM - 2:00 PM</option>
-                    <option value="2:00 PM - 3:00 PM">2:00 PM - 3:00 PM</option>
-                    <option value="3:00 PM - 4:00 PM">3:00 PM - 4:00 PM</option>
-                    <option value="4:00 PM - 5:00 PM">4:00 PM - 5:00 PM</option>
-                    <option value="5:00 PM - 6:00 PM">5:00 PM - 6:00 PM</option>
-                    <option value="6:00 PM - 7:00 PM">6:00 PM - 7:00 PM</option>
-                    <option value="7:00 PM - 8:00 PM">7:00 PM - 8:00 PM</option>
-                    <option value="8:00 PM - 9:00 PM">8:00 PM - 9:00 PM</option>
-                    <option value="9:00 PM - 10:00 PM">9:00 PM - 10:00 PM</option>
-                    <option value="10:00 PM - 11:00 PM">10:00 PM - 11:00 PM</option>
-                </select>
-            </div>
-
-            <!-- Payment Method Selector -->
-            <div class="space-y-1">
-                <label class="text-xs font-bold text-slate-600">Payment Option</label>
-                <select id="paymentMethod" onchange="updateCheckoutButtonText()" class="w-full text-xs p-2 border rounded bg-white font-semibold">
-                    <option value="online">Pay Online / UPI (8208963102 / GPay / PhonePe / QR)</option>
-                    <option value="cod">Cash / UPI on Delivery (COD)</option>
-                </select>
-            </div>
-
-            <!-- Online Payment Info Banner -->
-            <div id="onlineUpiInfo" class="bg-amber-50 border border-amber-300 rounded p-2 text-xs text-amber-900 space-y-1">
-                <div class="flex items-center space-x-1.5 font-bold text-amber-950">
-                    <i class="fa-solid fa-shield-halal text-maroon"></i>
-                    <span>Online Payment Security</span>
-                </div>
-                <p class="text-[11px] text-slate-600">
-                    You will pay via UPI (8208963102) or Razorpay Gateway. Order is placed <strong>ONLY AFTER SUCCESSFUL PAYMENT</strong>.
-                </p>
-            </div>
-
-            <button id="checkoutBtn" onclick="handleCheckout()" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-lg shadow-lg flex items-center justify-center space-x-2 transition">
-                <i class="fa-solid fa-lock text-lg" id="btnIcon"></i>
-                <span id="btnText">Proceed to Online Payment</span>
-            </button>
-        </div>
-    </div>
-
-    <!-- ONLINE PAYMENT MODAL GATEWAY -->
-    <div id="paymentModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 relative animate-fade-in border border-amber-200">
-            <!-- Modal Close Button -->
-            <button onclick="closePaymentModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 text-xl font-bold">&times;</button>
-            
-            <div class="text-center space-y-3">
-                <div class="inline-flex items-center justify-center w-12 h-12 bg-green-100 text-green-600 rounded-full">
-                    <i class="fa-solid fa-qrcode text-2xl"></i>
-                </div>
-                <h3 class="text-xl font-black text-slate-800">Scan & Pay via UPI</h3>
-                <p class="text-xs text-slate-500">Pay directly to vendor number <span class="font-bold text-maroon">8208963102</span></p>
-                
-                <!-- Display Total -->
-                <div class="bg-slate-50 border rounded-xl p-3 my-2">
-                    <span class="text-xs text-slate-500 block">Total Amount to Pay</span>
-                    <span id="modalPayAmount" class="text-3xl font-black text-maroon">₹0</span>
-                </div>
-
-                <!-- QR Code Box -->
-                <div class="flex flex-col items-center justify-center space-y-2 py-2">
-                    <img id="upiQrCodeImg" src="" alt="UPI Payment QR" class="w-48 h-48 border-2 border-slate-200 rounded-xl shadow-sm">
-                    <p class="text-[11px] text-slate-500 font-semibold">Scan with GPay, PhonePe, Paytm or BHIM</p>
-                </div>
-
-                <!-- Direct UPI App Button -->
-                <a id="directUpiLink" href="#" class="block w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-xl text-xs shadow transition">
-                    <i class="fa-solid fa-mobile-screen-button mr-1"></i> Open in Installed UPI App
-                </a>
-
-                <div class="relative flex py-1 items-center">
-                    <div class="flex-grow border-t border-slate-200"></div>
-                    <span class="flex-shrink mx-2 text-[10px] text-slate-400 font-bold uppercase">After Payment Done</span>
-                    <div class="flex-grow border-t border-slate-200"></div>
-                </div>
-
-                <!-- Transaction Reference Input -->
-                <div class="text-left space-y-1">
-                    <label class="text-xs font-bold text-slate-700">Enter UPI Transaction ID / UTR (12 digits)</label>
-                    <input type="text" id="transactionIdInput" placeholder="e.g. 423456789012" class="w-full text-xs p-2.5 border border-slate-300 rounded-lg focus:outline-none focus:border-green-600 font-mono">
-                </div>
-
-                <!-- Submit Button -->
-                <button onclick="verifyAndPlaceOrder()" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl shadow-lg flex items-center justify-center space-x-2 transition text-sm">
-                    <i class="fa-solid fa-circle-check text-lg"></i>
-                    <span>Confirm Payment & Place Order</span>
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- VENDOR ADMIN DASHBOARD MODAL -->
-    <div id="adminModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-6 hidden">
-        <div class="bg-white rounded-2xl shadow-2xl max-w-5xl w-full h-[90vh] flex flex-col relative overflow-hidden">
-            
-            <!-- Admin Header -->
-            <div class="bg-maroon text-white p-4 flex justify-between items-center shrink-0">
-                <div class="flex items-center space-x-2">
-                    <i class="fa-solid fa-chart-line text-amber-400 text-xl"></i>
-                    <div>
-                        <h2 class="text-lg font-black tracking-wide">Vendor Sales & Orders Report Dashboard</h2>
-                        <p class="text-[10px] text-red-200">Real-time Order Status, Customer Directory & Payment Tracking</p>
-                    </div>
-                </div>
-                <div class="flex items-center space-x-3">
-                    <button onclick="clearAllAdminOrders()" class="bg-red-800 hover:bg-red-900 text-amber-300 border border-amber-400/30 text-xs px-3 py-1 rounded-lg font-bold">
-                        <i class="fa-solid fa-trash mr-1"></i> Clear History
-                    </button>
-                    <button onclick="toggleAdminPanel()" class="text-white hover:text-amber-400 text-2xl font-bold">&times;</button>
-                </div>
-            </div>
-
-            <!-- Admin Content Container -->
-            <div class="p-4 sm:p-6 overflow-y-auto flex-1 bg-slate-50 space-y-6">
-
-                <!-- Key Sales Metrics Cards -->
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div class="bg-white p-4 rounded-xl border shadow-sm">
-                        <div class="text-slate-400 text-xs font-bold uppercase mb-1">Total Sales</div>
-                        <div class="text-2xl font-black text-maroon" id="adminTotalSales">₹0</div>
-                        <span class="text-[10px] text-slate-500 font-semibold">Completed revenue</span>
-                    </div>
-                    <div class="bg-white p-4 rounded-xl border shadow-sm">
-                        <div class="text-slate-400 text-xs font-bold uppercase mb-1">Total Orders</div>
-                        <div class="text-2xl font-black text-slate-800" id="adminTotalOrders">0</div>
-                        <span class="text-[10px] text-slate-500 font-semibold">All time orders</span>
-                    </div>
-                    <div class="bg-white p-4 rounded-xl border shadow-sm">
-                        <div class="text-slate-400 text-xs font-bold uppercase mb-1">Paid Online</div>
-                        <div class="text-2xl font-black text-green-600" id="adminOnlinePaid">₹0</div>
-                        <span class="text-[10px] text-green-700 font-semibold" id="adminOnlineCount">0 orders</span>
-                    </div>
-                    <div class="bg-white p-4 rounded-xl border shadow-sm">
-                        <div class="text-slate-400 text-xs font-bold uppercase mb-1">COD Pending</div>
-                        <div class="text-2xl font-black text-amber-600" id="adminCodPending">₹0</div>
-                        <span class="text-[10px] text-amber-700 font-semibold" id="adminCodCount">0 orders</span>
-                    </div>
-                </div>
-
-                <!-- Filters & Search Bar -->
-                <div class="bg-white p-3 rounded-xl border shadow-sm flex flex-col sm:flex-row justify-between gap-3 items-center">
-                    <div class="flex items-center space-x-2 w-full sm:w-auto">
-                        <i class="fa-solid fa-filter text-slate-400"></i>
-                        <span class="text-xs font-bold text-slate-600">Filter By Area:</span>
-                        <select id="adminAreaFilter" onchange="renderAdminOrders()" class="text-xs p-1.5 border rounded bg-slate-50 font-semibold">
-                            <option value="all">All Serviceable Areas</option>
-                            <option value="Hadapsar">Hadapsar</option>
-                            <option value="Wakad">Wakad</option>
-                            <option value="Hinjewadi">Hinjewadi</option>
-                            <option value="Swargate">Swargate</option>
-                            <option value="Sinhgad Rd">Sinhgad Rd</option>
-                            <option value="Kharadi">Kharadi</option>
-                            <option value="Wagholi">Wagholi</option>
-                        </select>
-                    </div>
-
-                    <div class="flex items-center space-x-2 w-full sm:w-auto">
-                        <span class="text-xs font-bold text-slate-600">Payment Status:</span>
-                        <select id="adminPaymentFilter" onchange="renderAdminOrders()" class="text-xs p-1.5 border rounded bg-slate-50 font-semibold">
-                            <option value="all">All Payment Types</option>
-                            <option value="PAID ONLINE">Online Paid Only</option>
-                            <option value="COD">COD Only</option>
-                        </select>
-                    </div>
-                </div>
-
-                <!-- Detailed Orders Table -->
-                <div class="bg-white rounded-xl border shadow-sm overflow-x-auto">
-                    <table class="w-full text-left text-xs border-collapse">
-                        <thead class="bg-slate-100 border-b text-slate-600 font-bold uppercase text-[10px]">
-                            <tr>
-                                <th class="p-3">Order ID & Date</th>
-                                <th class="p-3">Customer Details</th>
-                                <th class="p-3">Items Ordered</th>
-                                <th class="p-3">Slot & Area</th>
-                                <th class="p-3">Total & Payment Status</th>
-                                <th class="p-3">Order Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="adminOrdersTableBody" class="divide-y divide-slate-100">
-                            <!-- Orders dynamic injection -->
-                        </tbody>
-                    </table>
-                </div>
-
-            </div>
-        </div>
-    </div>
-
-    <script>
-        const products = [
-            { id: 1, name: "Fresh Farm Chicken - Curry Cut", category: "chicken", basePrice: 220, image: "https://images.unsplash.com/photo-1587593810167-a84920ea0781?w=500", cuts: ["Curry Cut (Skinless)", "With Skin", "Biryani Cut"] },
-            { id: 2, name: "Boneless Chicken Breast", category: "chicken", basePrice: 310, image: "https://images.unsplash.com/photo-1604503468506-a8da13d82791?w=500", cuts: ["Boneless Fillet", "Cube Cut", "Keema / Minced"] },
-            { id: 3, name: "Chicken Drumsticks (Leg Piece)", category: "chicken", basePrice: 280, image: "https://images.unsplash.com/photo-1588168333986-5078d3ae3976?w=500", cuts: ["Skinless Drumsticks", "With Skin"] },
-            { id: 4, name: "Premium Tender Mutton - Curry Cut", category: "mutton", basePrice: 780, image: "https://images.unsplash.com/photo-1544025162-d76694265947?w=500", cuts: ["Curry Cut (Mix)", "Shoulder Cut", "Ribs & Chops"] },
-            { id: 5, name: "Mutton Keema (Fine Minced Mutton)", category: "mutton", basePrice: 840, image: "https://images.unsplash.com/photo-1603048588665-791ca8aea617?w=500", cuts: ["Fine Minced (Keema)", "Coarse Minced"] },
-            { id: 6, name: "Sunday Family Feast Combo", category: "combos", basePrice: 950, image: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=500", cuts: ["Standard Combo Pack"] }
-        ];
-
-        const SERVICABLE_LOCATIONS = ["Hadapsar", "Wakad", "Hinjewadi", "Swargate", "Sinhgad Rd", "Kharadi", "Wagholi"];
+      tasks.forEach((task, index) => {
+        const li = document.createElement('li');
+        li.className = `task-item ${task.completed ? 'completed' : ''}`;
         
-        let cart = JSON.parse(localStorage.getItem('meatfresh_cart')) || [];
-        let shopPhoneNumber = localStorage.getItem('meatfresh_phone') || "918208963102";
-        let ordersReport = JSON.parse(localStorage.getItem('meatfresh_orders_report')) || [];
+        li.innerHTML = `
+          <div class="task-content" onclick="toggleTask(${index})">
+            <input type="checkbox" ${task.completed ? 'checked' : ''} readOnly />
+            <span>${escapeHTML(task.text)}</span>
+          </div>
+          <button class="delete-btn" onclick="deleteTask(${index})" aria-label="Delete task">&times;</button>
+        `;
 
-        window.onload = () => {
-            updateShopPhone(shopPhoneNumber);
-            renderProducts(products);
-            updateCartUI();
-            updateCheckoutButtonText();
-            renderAdminOrders();
-        };
+        taskList.appendChild(li);
+      });
+    }
 
-        function updateShopPhone(val) {
-            let cleaned = val.replace(/\D/g, '');
-            if (cleaned.startsWith('0')) cleaned = cleaned.substring(1);
-            shopPhoneNumber = cleaned || "918208963102";
-            
-            localStorage.setItem('meatfresh_phone', shopPhoneNumber);
-            const headerInput = document.getElementById('shopPhoneHeader');
-            const cartInput = document.getElementById('shopPhoneCart');
-            if (headerInput) headerInput.value = shopPhoneNumber;
-            if (cartInput) cartInput.value = shopPhoneNumber;
-        }
+    // Add new task
+    taskForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const text = taskInput.value.trim();
+      
+      if (text) {
+        tasks.push({ text, completed: false });
+        taskInput.value = '';
+        saveTasks();
+      }
+    });
 
-        function renderProducts(items) {
-            const grid = document.getElementById('productGrid');
-            grid.innerHTML = items.map(p => `
-                <div class="bg-white rounded-xl shadow-md overflow-hidden border border-slate-100 flex flex-col justify-between">
-                    <div>
-                        <img src="${p.image}" alt="${p.name}" class="h-44 w-full object-cover">
-                        <div class="p-4 space-y-3">
-                            <h3 class="font-bold text-slate-800 text-lg leading-snug">${p.name}</h3>
-                            <div>
-                                <label class="text-xs font-semibold text-slate-500">Select Cut Type:</label>
-                                <select id="cut-${p.id}" class="w-full text-xs p-2 mt-1 border rounded bg-slate-50 focus:outline-none">
-                                    ${p.cuts.map(c => `<option value="${c}">${c}</option>`).join('')}
-                                </select>
-                            </div>
-                            <div>
-                                <label class="text-xs font-semibold text-slate-500">Select Portion:</label>
-                                <select id="weight-${p.id}" onchange="updateProductPrice(${p.id}, ${p.basePrice})" class="w-full text-xs p-2 mt-1 border rounded bg-slate-50 focus:outline-none">
-                                    <option value="0.5">500 grams (₹${p.basePrice * 0.5})</option>
-                                    <option value="1" selected>1 kg (₹${p.basePrice})</option>
-                                    <option value="2">2 kg (₹${p.basePrice * 2})</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="p-4 bg-slate-50 border-t flex justify-between items-center">
-                        <div>
-                            <span class="text-xs text-slate-400 block">Price</span>
-                            <span class="text-xl font-black text-maroon" id="priceDisplay-${p.id}">₹${p.basePrice}</span>
-                        </div>
-                        <button onclick="addToCart(${p.id})" class="bg-maroon hover:bg-red-800 text-white text-xs font-bold px-4 py-2.5 rounded-lg shadow transition flex items-center space-x-1">
-                            <i class="fa-solid fa-plus"></i>
-                            <span>Add to Cart</span>
-                        </button>
-                    </div>
-                </div>
-            `).join('');
-        }
+    // Toggle complete status
+    function toggleTask(index) {
+      tasks[index].completed = !tasks[index].completed;
+      saveTasks();
+    }
 
-        function updateProductPrice(id, basePrice) {
-            const weight = parseFloat(document.getElementById(`weight-${id}`).value);
-            document.getElementById(`priceDisplay-${id}`).innerText = `₹${basePrice * weight}`;
-        }
+    // Delete task
+    function deleteTask(index) {
+      tasks.splice(index, 1);
+      saveTasks();
+    }
 
-        function filterCategory(cat, e) {
-            document.querySelectorAll('.cat-btn').forEach(b => {
-                b.classList.remove('bg-maroon', 'text-white');
-                b.classList.add('bg-white', 'text-slate-700');
-            });
-            if (e && e.currentTarget) {
-                e.currentTarget.classList.remove('bg-white', 'text-slate-700');
-                e.currentTarget.classList.add('bg-maroon', 'text-white');
-            }
+    // Sanitize input strings to prevent XSS
+    function escapeHTML(str) {
+      return str.replace(/[&<>'"]/g, 
+        tag => ({
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          "'": '&#39;',
+          '"': '&quot;'
+        }[tag] || tag)
+      );
+    }
 
-            if (cat === 'all') renderProducts(products);
-            else renderProducts(products.filter(p => p.category === cat));
-        }
-
-        function addToCart(productId) {
-            const product = products.find(p => p.id === productId);
-            const cut = document.getElementById(`cut-${productId}`).value;
-            const weightOption = parseFloat(document.getElementById(`weight-${productId}`).value);
-            const weightText = weightOption === 0.5 ? "500g" : `${weightOption}kg`;
-            const price = product.basePrice * weightOption;
-
-            const existingIndex = cart.findIndex(item => item.id === productId && item.cut === cut && item.weightText === weightText);
-
-            if (existingIndex > -1) {
-                cart[existingIndex].qty += 1;
-            } else {
-                cart.push({ id: productId, name: product.name, cut, weightText, unitPrice: price, qty: 1 });
-            }
-
-            saveCartAndUI();
-            toggleCart(true);
-        }
-
-        function updateCartQty(index, delta) {
-            cart[index].qty += delta;
-            if (cart[index].qty <= 0) cart.splice(index, 1);
-            saveCartAndUI();
-        }
-
-        function saveCartAndUI() {
-            localStorage.setItem('meatfresh_cart', JSON.stringify(cart));
-            updateCartUI();
-        }
-
-        function updateCartUI() {
-            const container = document.getElementById('cartItems');
-            const badge = document.getElementById('cartBadge');
-            const totalItems = cart.reduce((acc, item) => acc + item.qty, 0);
-            badge.innerText = totalItems;
-
-            if (cart.length === 0) {
-                container.innerHTML = `<div class="text-center py-12 text-slate-400 text-sm"><i class="fa-solid fa-basket-shopping text-4xl mb-2 block"></i>Your shopping cart is empty</div>`;
-                document.getElementById('subtotalPrice').innerText = `₹0`;
-                document.getElementById('deliveryPrice').innerText = `FREE`;
-                document.getElementById('totalPrice').innerText = `₹0`;
-                return;
-            }
-
-            container.innerHTML = cart.map((item, idx) => `
-                <div class="bg-slate-50 p-3 rounded-lg border flex justify-between items-center text-xs">
-                    <div>
-                        <p class="font-bold text-slate-800">${item.name}</p>
-                        <p class="text-slate-500">${item.cut} | ${item.weightText}</p>
-                        <p class="text-maroon font-black mt-1">₹${item.unitPrice * item.qty}</p>
-                    </div>
-                    <div class="flex items-center space-x-2 bg-white px-2 py-1 border rounded">
-                        <button onclick="updateCartQty(${idx}, -1)" class="font-bold text-slate-600 hover:text-red-600 px-1">-</button>
-                        <span class="font-bold">${item.qty}</span>
-                        <button onclick="updateCartQty(${idx}, 1)" class="font-bold text-slate-600 hover:text-green-600 px-1">+</button>
-                    </div>
-                </div>
-            `).join('');
-
-            const subtotal = cart.reduce((acc, i) => acc + (i.unitPrice * i.qty), 0);
-            const delivery = 0; // FREE Delivery
-            
-            document.getElementById('subtotalPrice').innerText = `₹${subtotal}`;
-            document.getElementById('deliveryPrice').innerText = `FREE`;
-            document.getElementById('totalPrice').innerText = `₹${subtotal + delivery}`;
-        }
-
-        function toggleCart(forceOpen = false) {
-            const drawer = document.getElementById('cartDrawer');
-            if (forceOpen) drawer.classList.remove('translate-x-full');
-            else drawer.classList.toggle('translate-x-full');
-        }
-
-        function checkLocationServicability() {
-            const selectedArea = document.getElementById('deliveryLocation').value;
-            const alertBox = document.getElementById('locationAlert');
-
-            if (!selectedArea) {
-                alertBox.classList.add('hidden');
-                return false;
-            }
-
-            if (selectedArea === 'other') {
-                alertBox.className = "text-xs p-2 rounded font-semibold bg-red-100 text-red-800 border border-red-300 block";
-                alertBox.innerHTML = `<i class="fa-solid fa-triangle-exclamation mr-1"></i> Sorry! We currently only deliver to Hadapsar, Wakad, Hinjewadi, Swargate, Sinhgad Rd, Kharadi, and Wagholi.`;
-                return false;
-            }
-
-            if (SERVICABLE_LOCATIONS.includes(selectedArea)) {
-                alertBox.className = "text-xs p-2 rounded font-semibold bg-green-100 text-green-800 border border-green-300 block";
-                alertBox.innerHTML = `<i class="fa-solid fa-circle-check mr-1"></i> Great news! Express free delivery is available for ${selectedArea}.`;
-                return true;
-            }
-
-            return false;
-        }
-
-        function updateCheckoutButtonText() {
-            const method = document.getElementById('paymentMethod').value;
-            const btnText = document.getElementById('btnText');
-            const btnIcon = document.getElementById('btnIcon');
-            const onlineUpiInfo = document.getElementById('onlineUpiInfo');
-
-            if (method === 'online') {
-                btnText.innerText = 'Proceed to Online Payment';
-                btnIcon.className = 'fa-solid fa-credit-card text-lg';
-                if (onlineUpiInfo) onlineUpiInfo.classList.remove('hidden');
-            } else {
-                btnText.innerText = 'Place Order via WhatsApp (COD)';
-                btnIcon.className = 'fa-brands fa-whatsapp text-xl';
-                if (onlineUpiInfo) onlineUpiInfo.classList.add('hidden');
-            }
-        }
-
-        function handleCheckout() {
-            if (cart.length === 0) {
-                alert('Please add items to your cart first!');
-                return;
-            }
-
-            const selectedArea = document.getElementById('deliveryLocation').value;
-            if (!selectedArea || !checkLocationServicability()) {
-                alert('Please select a valid serviceable location in Pune.');
-                return;
-            }
-
-            const customerName = document.getElementById('customerName').value.trim();
-            const customerPhone = document.getElementById('customerPhone').value.trim();
-            const customerAddress = document.getElementById('customerAddress').value.trim();
-            if (!customerName || !customerPhone || !customerAddress) {
-                alert('Please fill out your Name, Mobile Number, and Delivery Address.');
-                return;
-            }
-
-            const paymentMethod = document.getElementById('paymentMethod').value;
-
-            if (paymentMethod === 'online') {
-                openPaymentModal();
-            } else {
-                saveOrderToReports('COD', 'Pending COD');
-                sendVendorWhatsAppOrder('UNPAID (Cash / UPI on Delivery)');
-            }
-        }
-
-        // OPEN ONLINE PAYMENT MODAL GATEWAY
-        function openPaymentModal() {
-            const subtotal = cart.reduce((acc, i) => acc + (i.unitPrice * i.qty), 0);
-            const totalAmount = subtotal + 0;
-            const upiNumber = shopPhoneNumber.slice(-10) || "8208963102";
-            const upiId = `${upiNumber}@upi`;
-
-            document.getElementById('modalPayAmount').innerText = `₹${totalAmount}`;
-
-            // Build UPI Payment String
-            const upiString = `upi://pay?pa=${upiId}&pn=MeatFresh%20Pune&am=${totalAmount}&cu=INR&tn=MeatFresh%20Order`;
-            
-            // Set QR Code Image via QR Server API
-            document.getElementById('upiQrCodeImg').src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(upiString)}`;
-            
-            // Set Direct App Link
-            document.getElementById('directUpiLink').href = upiString;
-
-            document.getElementById('paymentModal').classList.remove('hidden');
-        }
-
-        function closePaymentModal() {
-            document.getElementById('paymentModal').classList.add('hidden');
-        }
-
-        // VERIFY PAYMENT TRANSACTION ID AND PLACE ORDER ONLY AFTER SUCCESS
-        function verifyAndPlaceOrder() {
-            const txnId = document.getElementById('transactionIdInput').value.trim();
-            if (!txnId || txnId.length < 6) {
-                alert('Please enter a valid UPI Transaction ID / UTR number (at least 6-12 digits) after completing payment.');
-                return;
-            }
-
-            // Save order inside Admin Dashboard Reports
-            saveOrderToReports('PAID ONLINE', txnId);
-
-            // Close Modal & Trigger WhatsApp Order Placement
-            closePaymentModal();
-            
-            alert(`✅ Payment Confirmed!\nTransaction Ref ID: ${txnId}\n\nClick OK to place your order on WhatsApp with Payment Proof.`);
-
-            sendVendorWhatsAppOrder(`PAID ONLINE ✅\n📱 *Paid To:* 8208963102\n💳 *Transaction ID / UTR:* ${txnId}`);
-
-            // Clear Cart
-            cart = [];
-            saveCartAndUI();
-            document.getElementById('transactionIdInput').value = '';
-        }
-
-        // SAVE ORDER DATA TO LOCALSTORAGE FOR ADMIN REPORTS
-        function saveOrderToReports(paymentType, utrRef) {
-            const selectedArea = document.getElementById('deliveryLocation').value;
-            const customerName = document.getElementById('customerName').value.trim();
-            const customerPhone = document.getElementById('customerPhone').value.trim();
-            const customerAddress = document.getElementById('customerAddress').value.trim();
-            const slot = document.getElementById('deliverySlot').value;
-            const total = cart.reduce((acc, i) => acc + (i.unitPrice * i.qty), 0);
-
-            const newOrder = {
-                orderId: 'MF' + Math.floor(100000 + Math.random() * 900000),
-                date: new Date().toLocaleString(),
-                customerName,
-                customerPhone,
-                customerAddress,
-                area: selectedArea,
-                slot,
-                items: [...cart],
-                totalAmount: total,
-                paymentType, // 'PAID ONLINE' or 'COD'
-                utrRef,      // UTR ID or 'Pending COD'
-                status: 'Preparing'
-            };
-
-            ordersReport.unshift(newOrder);
-            localStorage.setItem('meatfresh_orders_report', JSON.stringify(ordersReport));
-            renderAdminOrders();
-        }
-
-        // TOGGLE ADMIN PANEL MODAL
-        function toggleAdminPanel() {
-            const adminModal = document.getElementById('adminModal');
-            adminModal.classList.toggle('hidden');
-            if (!adminModal.classList.contains('hidden')) {
-                renderAdminOrders();
-            }
-        }
-
-        // RENDER ADMIN DASHBOARD REPORTS AND ORDERS TABLE
-        function renderAdminOrders() {
-            const areaFilter = document.getElementById('adminAreaFilter').value;
-            const paymentFilter = document.getElementById('adminPaymentFilter').value;
-            
-            let filtered = ordersReport;
-
-            if (areaFilter !== 'all') {
-                filtered = filtered.filter(o => o.area === areaFilter);
-            }
-            if (paymentFilter !== 'all') {
-                filtered = filtered.filter(o => o.paymentType === paymentFilter);
-            }
-
-            // Calculate Metrics
-            const totalSales = ordersReport.reduce((acc, o) => acc + o.totalAmount, 0);
-            const totalOrders = ordersReport.length;
-
-            const onlineOrders = ordersReport.filter(o => o.paymentType === 'PAID ONLINE');
-            const onlinePaidSum = onlineOrders.reduce((acc, o) => acc + o.totalAmount, 0);
-
-            const codOrders = ordersReport.filter(o => o.paymentType === 'COD');
-            const codPendingSum = codOrders.reduce((acc, o) => acc + o.totalAmount, 0);
-
-            document.getElementById('adminTotalSales').innerText = `₹${totalSales}`;
-            document.getElementById('adminTotalOrders').innerText = totalOrders;
-            document.getElementById('adminOnlinePaid').innerText = `₹${onlinePaidSum}`;
-            document.getElementById('adminOnlineCount').innerText = `${onlineOrders.length} online orders`;
-            document.getElementById('adminCodPending').innerText = `₹${codPendingSum}`;
-            document.getElementById('adminCodCount').innerText = `${codOrders.length} COD orders`;
-
-            const tableBody = document.getElementById('adminOrdersTableBody');
-
-            if (filtered.length === 0) {
-                tableBody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-slate-400 font-medium">No customer orders recorded yet. Place an order to see live reports!</td></tr>`;
-                return;
-            }
-
-            tableBody.innerHTML = filtered.map((o) => `
-                <tr class="hover:bg-slate-50 transition">
-                    <td class="p-3">
-                        <span class="font-bold text-maroon block">#${o.orderId}</span>
-                        <span class="text-[10px] text-slate-400">${o.date}</span>
-                    </td>
-                    <td class="p-3">
-                        <span class="font-bold text-slate-800 block">${o.customerName}</span>
-                        <a href="tel:${o.customerPhone}" class="text-blue-600 font-semibold hover:underline">${o.customerPhone}</a>
-                        <p class="text-[10px] text-slate-500 max-w-xs truncate">${o.customerAddress}</p>
-                    </td>
-                    <td class="p-3">
-                        <div class="space-y-0.5 text-[11px]">
-                            ${o.items.map(i => `<p><strong class="text-slate-700">${i.qty}x</strong>${i.name} <span class="text-slate-400">(${i.cut},${i.weightText})</span></p>`).join('')}
-                        </div>
-                    </td>
-                    <td class="p-3">
-                        <span class="bg-amber-100 text-amber-900 px-2 py-0.5 rounded text-[10px] font-bold block w-max">${o.area}</span>
-                        <span class="text-[10px] text-slate-600 font-semibold mt-1 block">${o.slot}</span>
-                    </td>
-                    <td class="p-3">
-                        <span class="text-sm font-black text-slate-900 block">₹${o.totalAmount}</span>
-                        ${o.paymentType === 'PAID ONLINE' ? 
-                            `<span class="bg-green-100 text-green-800 px-2 py-0.5 rounded text-[10px] font-bold block w-max"><i class="fa-solid fa-circle-check mr-1"></i> Paid Online</span>
-                             <span class="text-[9px] font-mono text-slate-500 block mt-0.5">UTR: ${o.utrRef}</span>` : 
-                            `<span class="bg-amber-100 text-amber-800 px-2 py-0.5 rounded text-[10px] font-bold block w-max"><i class="fa-solid fa-clock mr-1"></i> COD</span>`
-                        }
-                    </td>
-                    <td class="p-3">
-                        <select onchange="updateOrderStatus('${o.orderId}', this.value)" class="text-[10px] p-1 border rounded bg-white font-bold text-slate-700">
-                            <option value="Preparing" ${o.status === 'Preparing' ? 'selected' : ''}>Preparing</option>
-                            <option value="Out for Delivery" ${o.status === 'Out for Delivery' ? 'selected' : ''}>Out for Delivery</option>
-                            <option value="Delivered" ${o.status === 'Delivered' ? 'selected' : ''}>Delivered</option>
-                            <option value="Cancelled" ${o.status === 'Cancelled' ? 'selected' : ''}>Cancelled</option>
-                        </select>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        function updateOrderStatus(orderId, newStatus) {
-            const index = ordersReport.findIndex(o => o.orderId === orderId);
-            if (index > -1) {
-                ordersReport[index].status = newStatus;
-                localStorage.setItem('meatfresh_orders_report', JSON.stringify(ordersReport));
-            }
-        }
-
-        function clearAllAdminOrders() {
-            if (confirm("Are you sure you want to clear all order reports history?")) {
-                ordersReport = [];
-                localStorage.removeItem('meatfresh_orders_report');
-                renderAdminOrders();
-            }
-        }
-
-        // SEND WHATSAPP MESSAGE TO VENDOR WITH PROOF
-        function sendVendorWhatsAppOrder(paymentProofDetails) {
-            const selectedArea = document.getElementById('deliveryLocation').value;
-            const customerName = document.getElementById('customerName').value.trim();
-            const customerPhone = document.getElementById('customerPhone').value.trim();
-            const customerAddress = document.getElementById('customerAddress').value.trim();
-            const slot = document.getElementById('deliverySlot').value;
-            const subtotal = cart.reduce((acc, i) => acc + (i.unitPrice * i.qty), 0);
-            const total = subtotal + 0;
-
-            let message = `🥩 *NEW CONFIRMED ORDER - MeatFresh*\n`;
-            message += `====================================\n`;
-            message += `👤 *Customer Name:* ${customerName}\n`;
-            message += `📱 *Customer Phone:* ${customerPhone}\n`;
-            message += `🏠 *Address:* ${customerAddress}\n`;
-            message += `📍 *Delivery Area:* ${selectedArea}\n`;
-            message += `🕒 *Delivery Slot:* ${slot}\n`;
-            message += `====================================\n`;
-            message += `📦 *ORDERED ITEMS:*\n`;
-            
-            cart.forEach((i, idx) => {
-                message += `${idx + 1}. *${i.name}*\n   - Cut: ${i.cut}\n   - Weight: ${i.weightText} x ${i.qty}\n   - Item Total: ₹${i.unitPrice * i.qty}\n`;
-            });
-
-            message += `------------------------------------\n`;
-            message += `💰 *Subtotal:* ₹${subtotal}\n`;
-            message += `🚚 *Delivery Fee:* FREE (₹0)\n`;
-            message += `💵 *TOTAL AMOUNT:* ₹${total}\n`;
-            message += `------------------------------------\n`;
-            message += `🔒 *PAYMENT STATUS & PROOF:*\n${paymentProofDetails}\n`;
-            message += `====================================\n`;
-
-            const cleanPhone = shopPhoneNumber.replace(/\D/g, '');
-            const encodedMessage = encodeURIComponent(message);
-            
-            // Redirects to vendor WhatsApp chat with complete bill and proof
-            window.open(`https://wa.me/${cleanPhone}?text=${encodedMessage}`, '_blank');
-        }
-    </script>
+    // Initial render on load
+    renderTasks();
+  </script>
 </body>
 </html>

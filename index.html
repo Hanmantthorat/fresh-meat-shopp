@@ -113,7 +113,7 @@
             </div>
             
             <p class="text-[11px] text-amber-800 font-semibold mt-3 text-center md:text-left">
-                <i class="fa-solid fa-bolt text-amber-600 mr-1"></i> Orders placed from these locations qualify for guaranteed 30-minute express delivery with zero delivery charges.
+                <i class="fa-solid fa-bolt text-amber-600 mr-1"></i> Orders placed from these locations qualify for guaranteed express delivery with zero delivery charges.
             </p>
         </div>
     </section>
@@ -153,7 +153,7 @@
             <!-- Cart items render dynamically -->
         </div>
 
-        <div class="p-4 border-t bg-slate-50 space-y-3">
+        <div class="p-4 border-t bg-slate-50 space-y-3 overflow-y-auto max-h-[60vh]">
             <div class="space-y-1 text-sm">
                 <div class="flex justify-between text-slate-600">
                     <span>Subtotal:</span>
@@ -194,13 +194,30 @@
                 <textarea id="customerAddress" rows="2" placeholder="Flat No., Building/Society & Landmark" class="w-full text-xs p-2 border rounded focus:outline-none focus:border-maroon"></textarea>
             </div>
 
-            <!-- Delivery Slot Selector -->
+            <!-- Hourly Delivery Slot Selector (4 AM to 11 PM) -->
             <div class="space-y-1">
-                <label class="text-xs font-bold text-slate-600">Delivery Slot</label>
-                <select id="deliverySlot" class="w-full text-xs p-2 border rounded bg-white">
-                    <option>Express 30-Min Delivery (Immediate)</option>
-                    <option>Today Evening (6 PM - 8 PM)</option>
-                    <option>Tomorrow Morning (7 AM - 9 AM)</option>
+                <label class="text-xs font-bold text-slate-600">Delivery Slot (4:00 AM - 11:00 PM)</label>
+                <select id="deliverySlot" class="w-full text-xs p-2 border rounded bg-white font-medium">
+                    <option value="Immediate Express Delivery">Immediate Express Delivery (Next Available Slot)</option>
+                    <option value="4:00 AM - 5:00 AM">4:00 AM - 5:00 AM</option>
+                    <option value="5:00 AM - 6:00 AM">5:00 AM - 6:00 AM</option>
+                    <option value="6:00 AM - 7:00 AM">6:00 AM - 7:00 AM</option>
+                    <option value="7:00 AM - 8:00 AM">7:00 AM - 8:00 AM</option>
+                    <option value="8:00 AM - 9:00 AM">8:00 AM - 9:00 AM</option>
+                    <option value="9:00 AM - 10:00 AM">9:00 AM - 10:00 AM</option>
+                    <option value="10:00 AM - 11:00 AM">10:00 AM - 11:00 AM</option>
+                    <option value="11:00 AM - 12:00 PM">11:00 AM - 12:00 PM</option>
+                    <option value="12:00 PM - 1:00 PM">12:00 PM - 1:00 PM</option>
+                    <option value="1:00 PM - 2:00 PM">1:00 PM - 2:00 PM</option>
+                    <option value="2:00 PM - 3:00 PM">2:00 PM - 3:00 PM</option>
+                    <option value="3:00 PM - 4:00 PM">3:00 PM - 4:00 PM</option>
+                    <option value="4:00 PM - 5:00 PM">4:00 PM - 5:00 PM</option>
+                    <option value="5:00 PM - 6:00 PM">5:00 PM - 6:00 PM</option>
+                    <option value="6:00 PM - 7:00 PM">6:00 PM - 7:00 PM</option>
+                    <option value="7:00 PM - 8:00 PM">7:00 PM - 8:00 PM</option>
+                    <option value="8:00 PM - 9:00 PM">8:00 PM - 9:00 PM</option>
+                    <option value="9:00 PM - 10:00 PM">9:00 PM - 10:00 PM</option>
+                    <option value="10:00 PM - 11:00 PM">10:00 PM - 11:00 PM</option>
                 </select>
             </div>
 
@@ -284,7 +301,7 @@
 
     <script>
         const products = [
-            { id: 1, name: "Fresh Farm Chicken - Curry Cut", category: "chicken", basePrice: 10, image: "https://images.unsplash.com/photo-1587593810167-a84920ea0781?w=500", cuts: ["Curry Cut (Skinless)", "With Skin", "Biryani Cut"] },
+            { id: 1, name: "Fresh Farm Chicken - Curry Cut", category: "chicken", basePrice: 220, image: "https://images.unsplash.com/photo-1587593810167-a84920ea0781?w=500", cuts: ["Curry Cut (Skinless)", "With Skin", "Biryani Cut"] },
             { id: 2, name: "Boneless Chicken Breast", category: "chicken", basePrice: 310, image: "https://images.unsplash.com/photo-1604503468506-a8da13d82791?w=500", cuts: ["Boneless Fillet", "Cube Cut", "Keema / Minced"] },
             { id: 3, name: "Chicken Drumsticks (Leg Piece)", category: "chicken", basePrice: 280, image: "https://images.unsplash.com/photo-1588168333986-5078d3ae3976?w=500", cuts: ["Skinless Drumsticks", "With Skin"] },
             { id: 4, name: "Premium Tender Mutton - Curry Cut", category: "mutton", basePrice: 780, image: "https://images.unsplash.com/photo-1544025162-d76694265947?w=500", cuts: ["Curry Cut (Mix)", "Shoulder Cut", "Ribs & Chops"] },
@@ -294,9 +311,6 @@
 
         const SERVICABLE_LOCATIONS = ["Hadapsar", "Wakad", "Hinjewadi", "Swargate", "Sinhgad Rd", "Kharadi", "Wagholi"];
         
-        // Replace with your Razorpay Key ID
-        const RAZORPAY_KEY_ID = "rzp_test_YourKeyHere"; 
-
         let cart = JSON.parse(localStorage.getItem('meatfresh_cart')) || [];
         let shopPhoneNumber = localStorage.getItem('meatfresh_phone') || "918208963102";
 
@@ -531,7 +545,7 @@
             // Build UPI Payment String
             const upiString = `upi://pay?pa=${upiId}&pn=MeatFresh%20Pune&am=${totalAmount}&cu=INR&tn=MeatFresh%20Order`;
             
-            // Set QR Code Image via Google Chart API
+            // Set QR Code Image via QR Server API
             document.getElementById('upiQrCodeImg').src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(upiString)}`;
             
             // Set Direct App Link

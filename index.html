@@ -24,10 +24,10 @@
                 <span class="text-2xl font-black tracking-wide">Meat<span class="text-amber-400">Fresh</span></span>
             </div>
             
-            <!-- WhatsApp Shop Number Input -->
+            <!-- WhatsApp Vendor Number Input -->
             <div class="hidden sm:flex items-center bg-red-950 px-3 py-1 rounded-full text-xs space-x-2 border border-red-800">
                 <i class="fa-brands fa-whatsapp text-green-400 text-base"></i>
-                <span>Shop Phone:</span>
+                <span>Vendor Phone:</span>
                 <input type="text" id="shopPhoneHeader" value="918208963102" oninput="updateShopPhone(this.value)" class="bg-transparent text-amber-300 font-bold w-28 focus:outline-none border-b border-amber-400/40 text-center">
             </div>
 
@@ -97,7 +97,7 @@
         </div>
 
         <div class="p-4 bg-amber-50 text-xs border-b border-amber-200 text-amber-900 flex justify-between items-center">
-            <span><i class="fa-brands fa-whatsapp text-green-600 mr-1 text-sm"></i> Shop WhatsApp Phone:</span>
+            <span><i class="fa-brands fa-whatsapp text-green-600 mr-1 text-sm"></i> Vendor WhatsApp Number:</span>
             <input type="text" id="shopPhoneCart" value="918208963102" oninput="updateShopPhone(this.value)" class="bg-white border px-2 py-0.5 rounded font-bold w-32 text-right">
         </div>
 
@@ -140,7 +140,8 @@
 
             <!-- Customer Details Input -->
             <div class="space-y-1">
-                <label class="text-xs font-bold text-slate-600">Full Address & Mobile Number</label>
+                <label class="text-xs font-bold text-slate-600">Customer Name, Address & Mobile</label>
+                <input type="text" id="customerName" placeholder="Customer Full Name" class="w-full text-xs p-2 border rounded mb-1 focus:outline-none focus:border-maroon">
                 <textarea id="customerAddress" rows="2" placeholder="Flat No., Building/Society, Landmark & Contact No." class="w-full text-xs p-2 border rounded focus:outline-none focus:border-maroon"></textarea>
             </div>
 
@@ -157,15 +158,15 @@
             <!-- Payment Method Selector -->
             <div class="space-y-1">
                 <label class="text-xs font-bold text-slate-600">Payment Option</label>
-                <select id="paymentMethod" class="w-full text-xs p-2 border rounded bg-white font-semibold">
-                    <option value="cod">Cash / UPI on Delivery (COD)</option>
+                <select id="paymentMethod" onchange="updateCheckoutButtonText()" class="w-full text-xs p-2 border rounded bg-white font-semibold">
                     <option value="online">Pay Online Now (Razorpay / UPI / Card)</option>
+                    <option value="cod">Cash / UPI on Delivery (COD)</option>
                 </select>
             </div>
 
-            <button onclick="handleCheckout()" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-lg shadow-lg flex items-center justify-center space-x-2 transition">
-                <i class="fa-brands fa-whatsapp text-xl"></i>
-                <span>Proceed & Send Order</span>
+            <button id="checkoutBtn" onclick="handleCheckout()" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-lg shadow-lg flex items-center justify-center space-x-2 transition">
+                <i class="fa-solid fa-lock text-lg" id="btnIcon"></i>
+                <span id="btnText">Pay & Confirm Order</span>
             </button>
         </div>
     </div>
@@ -181,7 +182,9 @@
         ];
 
         const SERVICABLE_LOCATIONS = ["Hadapsar", "Wakad", "Hinjewadi", "Swargate", "Sinhgad Rd", "Kharadi", "Wagholi"];
-        const RAZORPAY_KEY_ID = "rzp_test_YourKeyHere"; // Replace with your Razorpay Key ID
+        
+        // Replace with your Razorpay Key ID
+        const RAZORPAY_KEY_ID = "rzp_test_YourKeyHere"; 
 
         let cart = JSON.parse(localStorage.getItem('meatfresh_cart')) || [];
         let shopPhoneNumber = localStorage.getItem('meatfresh_phone') || "918208963102";
@@ -190,6 +193,7 @@
             updateShopPhone(shopPhoneNumber);
             renderProducts(products);
             updateCartUI();
+            updateCheckoutButtonText();
         };
 
         function updateShopPhone(val) {
@@ -358,6 +362,20 @@
             return false;
         }
 
+        function updateCheckoutButtonText() {
+            const method = document.getElementById('paymentMethod').value;
+            const btnText = document.getElementById('btnText');
+            const btnIcon = document.getElementById('btnIcon');
+
+            if (method === 'online') {
+                btnText.innerText = 'Pay Online & Confirm Order';
+                btnIcon.className = 'fa-solid fa-lock text-lg';
+            } else {
+                btnText.innerText = 'Send Order via WhatsApp (COD)';
+                btnIcon.className = 'fa-brands fa-whatsapp text-xl';
+            }
+        }
+
         function handleCheckout() {
             if (cart.length === 0) {
                 alert('Please add items to your cart first!');
@@ -366,67 +384,101 @@
 
             const selectedArea = document.getElementById('deliveryLocation').value;
             if (!selectedArea || !checkLocationServicability()) {
-                alert('Please select a valid serviceable location (Hadapsar, Wakad, Hinjewadi, Swargate, Sinhgad Rd, Kharadi, or Wagholi).');
+                alert('Please select a valid serviceable location in Pune.');
                 return;
             }
 
+            const customerName = document.getElementById('customerName').value.trim();
             const customerAddress = document.getElementById('customerAddress').value.trim();
-            if (!customerAddress) {
-                alert('Please enter your full address and mobile number.');
+            if (!customerName || !customerAddress) {
+                alert('Please fill out your Name, Address and Mobile Number.');
                 return;
             }
 
             const paymentMethod = document.getElementById('paymentMethod').value;
+
             if (paymentMethod === 'online') {
-                payOnlineAndSendWhatsApp();
+                processOnlinePayment();
             } else {
-                sendOrderWhatsApp('Cash / UPI on Delivery (COD)');
+                sendVendorWhatsAppOrder('UNPAID (Cash / UPI on Delivery)');
             }
         }
 
-        function payOnlineAndSendWhatsApp() {
+        // TRIGGER RAZORPAY GATEWAY
+        function processOnlinePayment() {
             const subtotal = cart.reduce((acc, i) => acc + (i.unitPrice * i.qty), 0);
-            const totalAmount = subtotal + 30;
+            const totalAmount = subtotal + 30; // Subtotal + Delivery
 
             const options = {
                 "key": RAZORPAY_KEY_ID,
-                "amount": totalAmount * 100, // in paise
+                "amount": totalAmount * 100, // Amount in paise
                 "currency": "INR",
                 "name": "MeatFresh Pune",
                 "description": "Meat Order Payment",
                 "handler": function (response) {
-                    sendOrderWhatsApp(`Paid Online (ID: ${response.razorpay_payment_id})`);
+                    // EXECUTED ONLY IF PAYMENT IS VERIFIED SUCCESSFUL
+                    const paymentId = response.razorpay_payment_id;
+                    
+                    alert(`✅ Payment Successful!\nPayment ID: ${paymentId}\n\nClick OK to send order & payment proof to vendor via WhatsApp.`);
+
+                    // Send order + payment proof to Vendor via WhatsApp
+                    sendVendorWhatsAppOrder(`PAID ONLINE ✅\n💳 *Payment Proof / TXN ID:* ${paymentId}`);
+
+                    // Clear cart after placement
+                    cart = [];
+                    saveCartAndUI();
+                },
+                "modal": {
+                    "ondismiss": function() {
+                        alert('⚠️ Payment was canceled or closed. Order was NOT placed.');
+                    }
                 },
                 "theme": { "color": "#8B0000" }
             };
 
             const rzp = new Razorpay(options);
+
+            rzp.on('payment.failed', function (response) {
+                alert(`❌ Payment Failed: ${response.error.description}\nOrder was NOT placed.`);
+            });
+
             rzp.open();
         }
 
-        function sendOrderWhatsApp(paymentInfo) {
+        // SEND WHATSAPP MESSAGE TO VENDOR WITH PROOF
+        function sendVendorWhatsAppOrder(paymentProofDetails) {
             const selectedArea = document.getElementById('deliveryLocation').value;
+            const customerName = document.getElementById('customerName').value.trim();
             const customerAddress = document.getElementById('customerAddress').value.trim();
             const slot = document.getElementById('deliverySlot').value;
             const subtotal = cart.reduce((acc, i) => acc + (i.unitPrice * i.qty), 0);
             const total = subtotal + 30;
 
-            let message = `🥩 *NEW ORDER - MeatFresh Shop*\n`;
-            message += `------------------------------------\n`;
-            cart.forEach((i, idx) => {
-                message += `${idx + 1}. *${i.name}*\n   Cut: ${i.cut}\n   Portion: ${i.weightText} x ${i.qty}\n   Price: ₹${i.unitPrice * i.qty}\n`;
-            });
-            message += `------------------------------------\n`;
-            message += `*Subtotal:* ₹${subtotal}\n`;
-            message += `*Delivery Fee:* ₹30\n`;
-            message += `*Total Amount:* ₹${total}\n\n`;
-            message += `💳 *Payment Option:* ${paymentInfo}\n`;
-            message += `🕒 *Delivery Slot:* ${slot}\n`;
+            let message = `🥩 *NEW CONFIRMED ORDER - MeatFresh*\n`;
+            message += `====================================\n`;
+            message += `👤 *Customer Name:* ${customerName}\n`;
+            message += `🏠 *Address & Mobile:* ${customerAddress}\n`;
             message += `📍 *Delivery Area:* ${selectedArea}\n`;
-            message += `🏠 *Customer Address & Mobile:* ${customerAddress}\n`;
+            message += `🕒 *Delivery Slot:* ${slot}\n`;
+            message += `====================================\n`;
+            message += `📦 *ORDERED ITEMS:*\n`;
+            
+            cart.forEach((i, idx) => {
+                message += `${idx + 1}. *${i.name}*\n   - Cut: ${i.cut}\n   - Weight: ${i.weightText} x ${i.qty}\n   - Item Total: ₹${i.unitPrice * i.qty}\n`;
+            });
+
+            message += `------------------------------------\n`;
+            message += `💰 *Subtotal:* ₹${subtotal}\n`;
+            message += `🚚 *Delivery Fee:* ₹30\n`;
+            message += `💵 *TOTAL AMOUNT:* ₹${total}\n`;
+            message += `------------------------------------\n`;
+            message += `🔒 *PAYMENT STATUS & PROOF:*\n${paymentProofDetails}\n`;
+            message += `====================================\n`;
 
             const cleanPhone = shopPhoneNumber.replace(/\D/g, '');
             const encodedMessage = encodeURIComponent(message);
+            
+            // Redirects to vendor WhatsApp chat with complete bill and proof
             window.open(`https://wa.me/${cleanPhone}?text=${encodedMessage}`, '_blank');
         }
     </script>

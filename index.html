@@ -12,6 +12,7 @@
       --text: #f8fafc;
       --text-muted: #94a3b8;
       --danger: #f43f5e;
+      --border: #334155;
     }
 
     * {
@@ -49,15 +50,15 @@
     .input-group {
       display: flex;
       gap: 0.5rem;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1rem;
     }
 
     input[type="text"] {
       flex: 1;
       padding: 0.75rem 1rem;
       border-radius: 8px;
-      border: 1px solid #334155;
-      background: #0f172a;
+      border: 1px solid var(--border);
+      background: var(--bg);
       color: var(--text);
       outline: none;
     }
@@ -68,7 +69,7 @@
 
     button.btn-add {
       background-color: var(--accent);
-      color: #0f172a;
+      color: var(--bg);
       border: none;
       padding: 0.75rem 1.25rem;
       border-radius: 8px;
@@ -79,6 +80,35 @@
 
     button.btn-add:hover {
       opacity: 0.9;
+    }
+
+    .filters {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .filter-btn {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 0.4rem 0.8rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: all 0.2s;
+    }
+
+    .filter-btn:hover {
+      color: var(--text);
+      border-color: var(--text-muted);
+    }
+
+    .filter-btn.active {
+      background-color: var(--accent);
+      color: var(--bg);
+      border-color: var(--accent);
+      font-weight: 600;
     }
 
     .task-list {
@@ -93,21 +123,36 @@
       align-items: center;
       justify-content: space-between;
       padding: 0.75rem 1rem;
-      background-color: #0f172a;
+      background-color: var(--bg);
       border-radius: 8px;
-      border: 1px solid #334155;
+      border: 1px solid var(--border);
+      gap: 0.5rem;
     }
 
     .task-content {
       display: flex;
       align-items: center;
       gap: 0.75rem;
-      cursor: pointer;
+      flex: 1;
+      min-width: 0;
     }
 
-    .task-item.completed span {
+    .task-text {
+      flex: 1;
+      cursor: pointer;
+      word-break: break-word;
+    }
+
+    .task-item.completed .task-text {
       text-decoration: line-through;
       color: var(--text-muted);
+    }
+
+    .edit-input {
+      flex: 1;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      font-size: 1rem;
     }
 
     .delete-btn {
@@ -124,11 +169,35 @@
       background-color: rgba(244, 63, 94, 0.1);
     }
 
+    .app-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 1.25rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .clear-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      text-decoration: underline;
+      font-size: 0.85rem;
+    }
+
+    .clear-btn:hover {
+      color: var(--danger);
+    }
+
     .empty-state {
       text-align: center;
       color: var(--text-muted);
       font-size: 0.9rem;
-      margin-top: 1rem;
+      margin: 1rem 0;
     }
   </style>
 </head>
@@ -142,53 +211,73 @@
       <button type="submit" class="btn-add">Add</button>
     </form>
 
+    <div class="filters" id="filters">
+      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn" data-filter="active">Active</button>
+      <button class="filter-btn" data-filter="completed">Completed</button>
+    </div>
+
     <ul class="task-list" id="task-list"></ul>
-    <p class="empty-state" id="empty-state">No tasks yet. Add one above!</p>
+    <p class="empty-state" id="empty-state">No tasks found.</p>
+
+    <div class="app-footer">
+      <span id="task-count">0 items left</span>
+      <button class="clear-btn" id="clear-completed">Clear completed</button>
+    </div>
   </div>
 
   <script>
-    // State management
     let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+    let currentFilter = 'all';
 
-    // DOM Elements
     const taskForm = document.getElementById('task-form');
     const taskInput = document.getElementById('task-input');
     const taskList = document.getElementById('task-list');
     const emptyState = document.getElementById('empty-state');
+    const taskCount = document.getElementById('task-count');
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const clearCompletedBtn = document.getElementById('clear-completed');
 
-    // Save tasks to Local Storage
     function saveTasks() {
       localStorage.setItem('tasks', JSON.stringify(tasks));
       renderTasks();
     }
 
-    // Render tasks on screen
     function renderTasks() {
       taskList.innerHTML = '';
-      
-      if (tasks.length === 0) {
+
+      const filteredTasks = tasks.filter(task => {
+        if (currentFilter === 'active') return !task.completed;
+        if (currentFilter === 'completed') return task.completed;
+        return true;
+      });
+
+      if (filteredTasks.length === 0) {
         emptyState.style.display = 'block';
       } else {
         emptyState.style.display = 'none';
       }
 
-      tasks.forEach((task, index) => {
+      filteredTasks.forEach((task) => {
+        const index = tasks.indexOf(task);
         const li = document.createElement('li');
         li.className = `task-item ${task.completed ? 'completed' : ''}`;
         
         li.innerHTML = `
-          <div class="task-content" onclick="toggleTask(${index})">
-            <input type="checkbox" ${task.completed ? 'checked' : ''} readOnly />
-            <span>${escapeHTML(task.text)}</span>
+          <div class="task-content">
+            <input type="checkbox" ${task.completed ? 'checked' : ''} onchange="toggleTask(${index})" />
+            <span class="task-text" ondblclick="enableEdit(${index}, this)">${escapeHTML(task.text)}</span>
           </div>
           <button class="delete-btn" onclick="deleteTask(${index})" aria-label="Delete task">&times;</button>
         `;
 
         taskList.appendChild(li);
       });
+
+      const activeCount = tasks.filter(t => !t.completed).length;
+      taskCount.textContent = `${activeCount} item${activeCount === 1 ? '' : 's'} left`;
     }
 
-    // Add new task
     taskForm.addEventListener('submit', (e) => {
       e.preventDefault();
       const text = taskInput.value.trim();
@@ -200,19 +289,61 @@
       }
     });
 
-    // Toggle complete status
     function toggleTask(index) {
       tasks[index].completed = !tasks[index].completed;
       saveTasks();
     }
 
-    // Delete task
     function deleteTask(index) {
       tasks.splice(index, 1);
       saveTasks();
     }
 
-    // Sanitize input strings to prevent XSS
+    function enableEdit(index, spanEl) {
+      const currentText = tasks[index].text;
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.className = 'edit-input';
+      input.value = currentText;
+
+      spanEl.replaceWith(input);
+      input.focus();
+
+      const saveEdit = () => {
+        const newText = input.value.trim();
+        if (newText) {
+          tasks[index].text = newText;
+        } else {
+          tasks.splice(index, 1);
+        }
+        saveTasks();
+      };
+
+      input.addEventListener('blur', saveEdit);
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          input.blur();
+        } else if (e.key === 'Escape') {
+          input.removeEventListener('blur', saveEdit);
+          renderTasks();
+        }
+      });
+    }
+
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentFilter = btn.dataset.filter;
+        renderTasks();
+      });
+    });
+
+    clearCompletedBtn.addEventListener('click', () => {
+      tasks = tasks.filter(t => !t.completed);
+      saveTasks();
+    });
+
     function escapeHTML(str) {
       return str.replace(/[&<>'"]/g, 
         tag => ({
@@ -225,7 +356,6 @@
       );
     }
 
-    // Initial render on load
     renderTasks();
   </script>
 </body>

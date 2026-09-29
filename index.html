@@ -139,20 +139,12 @@
 
     .task-text {
       flex: 1;
-      cursor: pointer;
       word-break: break-word;
     }
 
     .task-item.completed .task-text {
       text-decoration: line-through;
       color: var(--text-muted);
-    }
-
-    .edit-input {
-      flex: 1;
-      padding: 0.2rem 0.5rem;
-      border-radius: 4px;
-      font-size: 1rem;
     }
 
     .delete-btn {
@@ -266,7 +258,7 @@
         li.innerHTML = `
           <div class="task-content">
             <input type="checkbox" ${task.completed ? 'checked' : ''} onchange="toggleTask(${index})" />
-            <span class="task-text" ondblclick="enableEdit(${index}, this)">${escapeHTML(task.text)}</span>
+            <span class="task-text">${escapeHTML(task.text)}</span>
           </div>
           <button class="delete-btn" onclick="deleteTask(${index})" aria-label="Delete task">&times;</button>
         `;
@@ -297,37 +289,6 @@
     function deleteTask(index) {
       tasks.splice(index, 1);
       saveTasks();
-    }
-
-    function enableEdit(index, spanEl) {
-      const currentText = tasks[index].text;
-      const input = document.createElement('input');
-      input.type = 'text';
-      input.className = 'edit-input';
-      input.value = currentText;
-
-      spanEl.replaceWith(input);
-      input.focus();
-
-      const saveEdit = () => {
-        const newText = input.value.trim();
-        if (newText) {
-          tasks[index].text = newText;
-        } else {
-          tasks.splice(index, 1);
-        }
-        saveTasks();
-      };
-
-      input.addEventListener('blur', saveEdit);
-      input.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
-          input.blur();
-        } else if (e.key === 'Escape') {
-          input.removeEventListener('blur', saveEdit);
-          renderTasks();
-        }
-      });
     }
 
     filterBtns.forEach(btn => {

@@ -15,8 +15,8 @@
       --accent-secondary: #ff6b00;
       --whatsapp: #25d366;
       --whatsapp-glow: rgba(37, 211, 102, 0.35);
-      --upi-blue: #0088cc;
-      --upi-glow: rgba(0, 136, 204, 0.35);
+      --upi-color: #5f259f;
+      --upi-glow: rgba(95, 37, 159, 0.35);
       --text-main: #f8fafc;
       --text-muted: #94a3b8;
       --border-color: rgba(255, 255, 255, 0.08);
@@ -94,13 +94,14 @@
       border-radius: 999px;
     }
 
-    /* --- CONTAINER & HERO --- */
+    /* --- LAYOUT --- */
     .container {
       max-width: 1180px;
       margin: 0 auto;
       padding: 1.5rem 1rem;
     }
 
+    /* --- HERO BANNER --- */
     .hero {
       position: relative;
       background: linear-gradient(135deg, rgba(255, 59, 48, 0.12) 0%, rgba(255, 107, 0, 0.05) 50%, rgba(15, 23, 42, 0) 100%), var(--surface);
@@ -212,6 +213,7 @@
       font-size: 0.75rem;
     }
 
+    /* --- SECTION HEADINGS --- */
     .section-title {
       font-size: 1.4rem;
       font-weight: 700;
@@ -221,6 +223,7 @@
       justify-content: space-between;
     }
 
+    /* --- PRODUCT GRID --- */
     .product-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -299,6 +302,10 @@
       color: var(--text-muted);
       margin-bottom: 1.1rem;
       line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
     }
 
     .price-row {
@@ -429,9 +436,9 @@
 
     .btn-checkout:hover {
       transform: translateY(-1px);
-      box-shadow: 0 6px 18px rgba(255, 59, 48, 0.5);
     }
 
+    /* --- MODAL & CHECKOUT STEPS --- */
     .modal {
       display: none;
       position: fixed;
@@ -461,50 +468,24 @@
       width: 100%;
       max-width: 500px;
       border: 1px solid var(--border-color);
-      max-height: 90vh;
+      max-height: 92vh;
       overflow-y: auto;
       box-shadow: var(--shadow-lg);
-      animation: slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    @keyframes slideUp {
-      from { transform: translateY(20px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
+      position: relative;
     }
 
     .modal-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 1.25rem;
+      margin-bottom: 1rem;
       border-bottom: 1px solid var(--border-color);
       padding-bottom: 0.75rem;
     }
 
     .modal-header h2 {
-      font-size: 1.2rem;
+      font-size: 1.25rem;
       font-weight: 800;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .step-indicator {
-      display: flex;
-      gap: 0.5rem;
-      margin-bottom: 1.25rem;
-    }
-
-    .step-pill {
-      flex: 1;
-      height: 4px;
-      background: var(--surface-card);
-      border-radius: 999px;
-      transition: background 0.3s;
-    }
-
-    .step-pill.active {
-      background: var(--accent);
     }
 
     .close-btn {
@@ -520,6 +501,46 @@
       color: var(--text-main);
     }
 
+    .step-tracker {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.25rem;
+      background: var(--bg);
+      padding: 0.5rem 0.75rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-color);
+    }
+
+    .step-item {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .step-item.active {
+      color: var(--accent);
+    }
+
+    .step-number {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--surface-card);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+    }
+
+    .step-item.active .step-number {
+      background: var(--accent);
+      color: white;
+    }
+
     .form-group {
       margin-bottom: 1rem;
     }
@@ -532,118 +553,79 @@
       margin-bottom: 0.4rem;
     }
 
-    /* UPI Gateway Specific Styles */
+    /* UPI Gateway Cards */
     .upi-box {
-      background: var(--surface-card);
-      border: 1px dashed rgba(255, 255, 255, 0.2);
+      background: rgba(95, 37, 159, 0.08);
+      border: 1px solid rgba(95, 37, 159, 0.3);
       border-radius: var(--radius-md);
       padding: 1.25rem;
       text-align: center;
       margin-bottom: 1.25rem;
     }
 
-    .upi-amount-badge {
-      font-size: 1.5rem;
-      font-weight: 800;
-      color: #38ef7d;
-      margin-bottom: 0.75rem;
-    }
-
-    .qr-container {
+    .qr-wrapper {
       background: white;
-      padding: 0.8rem;
-      border-radius: var(--radius-sm);
+      padding: 0.75rem;
+      border-radius: var(--radius-md);
       display: inline-block;
-      margin-bottom: 1rem;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      margin: 0.75rem 0;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
     }
 
-    .qr-container img {
+    .qr-wrapper img {
+      width: 170px;
+      height: 170px;
       display: block;
-      width: 160px;
-      height: 160px;
     }
 
-    .vpa-copy-box {
+    .upi-id-badge {
+      background: var(--surface-card);
+      border: 1px dashed rgba(255,255,255,0.2);
+      padding: 0.5rem 0.8rem;
+      border-radius: var(--radius-sm);
       display: flex;
       align-items: center;
-      background: var(--bg);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-sm);
-      padding: 0.4rem 0.6rem;
+      justify-content: space-between;
+      font-size: 0.85rem;
       margin-top: 0.5rem;
     }
 
-    .vpa-text {
-      flex: 1;
-      font-family: monospace;
-      font-weight: 700;
-      font-size: 0.95rem;
-      color: var(--text-main);
-      text-align: left;
-    }
-
     .btn-copy {
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(255,255,255,0.1);
       border: none;
-      color: #fff;
-      font-size: 0.75rem;
-      font-weight: 600;
-      padding: 0.35rem 0.65rem;
+      color: white;
+      padding: 0.2rem 0.6rem;
       border-radius: 4px;
+      font-size: 0.75rem;
       cursor: pointer;
-      transition: background 0.2s;
     }
 
     .btn-copy:hover {
-      background: rgba(255, 255, 255, 0.2);
+      background: var(--accent);
     }
 
-    .btn-upi-app {
-      background: linear-gradient(135deg, #0088cc, #005588);
+    .btn-pay-app {
+      background: linear-gradient(135deg, var(--upi-color), #802bb1);
       color: white;
-      text-decoration: none;
       border: none;
-      width: 100%;
       padding: 0.75rem;
       border-radius: var(--radius-sm);
       font-weight: 700;
       font-size: 0.9rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      margin-bottom: 1rem;
-      box-shadow: 0 4px 12px var(--upi-glow);
-    }
-
-    .btn-whatsapp {
-      background: linear-gradient(135deg, var(--whatsapp), #1da851);
-      color: white;
-      border: none;
-      padding: 0.8rem 1.4rem;
-      border-radius: var(--radius-md);
-      font-weight: 700;
-      font-size: 0.95rem;
+      width: 100%;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 0.6rem;
-      width: 100%;
-      transition: all 0.2s ease;
-      box-shadow: 0 4px 14px var(--whatsapp-glow);
-    }
-
-    .btn-whatsapp:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 6px 18px rgba(37, 211, 102, 0.5);
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+      box-shadow: 0 4px 14px var(--upi-glow);
     }
 
     .modal-actions {
       display: flex;
       gap: 0.75rem;
-      margin-top: 1.25rem;
+      margin-top: 1.5rem;
     }
 
     .btn-cancel {
@@ -655,69 +637,48 @@
       font-weight: 600;
       cursor: pointer;
       flex: 1;
-      transition: all 0.2s;
     }
 
-    .btn-cancel:hover {
-      background: rgba(255, 255, 255, 0.05);
-      color: var(--text-main);
-    }
-
-    /* Custom Toast Notification */
-    .toast-notification {
-      position: fixed;
-      top: 1rem;
-      left: 50%;
-      transform: translateX(-50%) translateY(-100px);
-      background: #1e293b;
-      border: 1px solid var(--accent);
-      color: #fff;
-      padding: 0.8rem 1.5rem;
-      border-radius: var(--radius-md);
-      box-shadow: var(--shadow-lg);
-      z-index: 200;
-      font-weight: 600;
+    .btn-whatsapp-confirm {
+      background: linear-gradient(135deg, var(--whatsapp), #1da851);
+      color: white;
+      border: none;
+      padding: 0.75rem;
+      border-radius: var(--radius-sm);
+      font-weight: 700;
       font-size: 0.9rem;
-      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      pointer-events: none;
+      cursor: pointer;
+      flex: 2;
       display: flex;
       align-items: center;
+      justify-content: center;
       gap: 0.5rem;
+      box-shadow: 0 4px 14px var(--whatsapp-glow);
     }
 
-    .toast-notification.active {
-      transform: translateX(-50%) translateY(0);
+    /* Notification Alert Box */
+    .alert-banner {
+      display: none;
+      background: rgba(255, 59, 48, 0.15);
+      border: 1px solid rgba(255, 59, 48, 0.4);
+      color: #ff6b6b;
+      padding: 0.65rem 0.85rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.82rem;
+      margin-bottom: 1rem;
     }
 
     @media (max-width: 600px) {
-      .hero {
-        padding: 1.75rem 1rem;
-      }
-
-      .hero h1 {
-        font-size: 1.6rem;
-      }
-
-      .cart-bar {
-        width: calc(100% - 1.5rem);
-        padding: 0.75rem 1rem;
-        bottom: 0.75rem;
-      }
-
-      .product-grid {
-        grid-template-columns: 1fr;
-      }
+      .hero { padding: 1.75rem 1rem; }
+      .hero h1 { font-size: 1.6rem; }
+      .cart-bar { width: calc(100% - 1.5rem); bottom: 0.75rem; }
+      .product-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
 
-  <!-- Toast Notification Container -->
-  <div id="toast" class="toast-notification">
-    <span id="toast-icon">⚡</span>
-    <span id="toast-message">Notification</span>
-  </div>
-
+  <!-- Header -->
   <header>
     <div class="brand">
       <span>🍗</span> Fresh Cuts
@@ -733,7 +694,7 @@
     <div class="hero">
       <div class="hero-badge">⚡ Express Delivery in Pune</div>
       <h1>Fresh &amp; Hygienic Meat Delivered</h1>
-      <p>Hand-picked, 100% antibiotic-free cuts. Pay seamlessly via UPI (GPay, PhonePe, Paytm) and dispatch your order directly to WhatsApp!</p>
+      <p>100% Antibiotic-free cuts. Select your delivery slot (4 AM – 10 PM), complete UPI payment, and receive instant confirmation on WhatsApp!</p>
     </div>
 
     <!-- Delivery Area Display -->
@@ -745,7 +706,7 @@
       <div class="area-tags" id="area-tags-container"></div>
     </div>
 
-    <!-- Products -->
+    <!-- Products Grid -->
     <div class="section-title">
       <span>Featured Fresh Cuts</span>
     </div>
@@ -755,48 +716,57 @@
   <!-- Bottom Floating Checkout Bar -->
   <div class="cart-bar">
     <div class="cart-summary">
-      <span class="cart-total" id="cart-total">Total: ₹0</span>
+      <span class="cart-total" id="cart-total">Total: ₹0.00</span>
       <span class="cart-subtext" id="cart-items-summary">No items in cart</span>
     </div>
     <button class="btn-checkout" onclick="openCheckoutModal()">
-      <span>Proceed to Checkout</span>
+      <span>Proceed to Checkout ➔</span>
     </button>
   </div>
 
+  <!-- Multi-Step Checkout Modal -->
   <div class="modal" id="checkout-modal">
     <div class="modal-content">
       <div class="modal-header">
-        <h2 id="modal-title">1. Delivery Details</h2>
+        <h2 id="modal-title">Checkout &amp; Delivery</h2>
         <button class="close-btn" onclick="closeCheckoutModal()">&times;</button>
       </div>
 
-      <div class="step-indicator">
-        <div class="step-pill active" id="pill-step-1"></div>
-        <div class="step-pill" id="pill-step-2"></div>
+      <!-- Step Indicator -->
+      <div class="step-tracker">
+        <div class="step-item active" id="step-1-indicator">
+          <span class="step-number">1</span> Delivery Details
+        </div>
+        <div style="color: var(--text-muted); font-size: 0.8rem;">➔</div>
+        <div class="step-item" id="step-2-indicator">
+          <span class="step-number">2</span> UPI Payment
+        </div>
       </div>
 
-      <!-- STEP 1: Delivery Details Form -->
-      <div id="step-1-container">
+      <div class="alert-banner" id="alert-banner"></div>
+
+      <!-- STEP 1: Delivery Information Form -->
+      <div id="step-1-form">
         <div class="form-group">
-          <label>Your Name *</label>
-          <input type="text" id="cust-name" placeholder="e.g. Rahul Sharma" required />
+          <label>Your Full Name *</label>
+          <input type="text" id="cust-name" placeholder="e.g. Rahul Sharma" />
         </div>
 
         <div class="form-group">
           <label>Phone Number *</label>
-          <input type="tel" id="cust-phone" placeholder="e.g. 9876543210" required />
+          <input type="tel" id="cust-phone" placeholder="e.g. 9876543210" />
         </div>
 
         <div class="form-group">
           <label>Select Delivery Area *</label>
-          <select id="cust-area" required>
+          <select id="cust-area">
             <option value="">-- Choose your area --</option>
           </select>
         </div>
 
         <div class="form-group">
           <label>Preferred Delivery Time Slot (4 AM – 10 PM) *</label>
-          <select id="cust-timeslot" required>
+          <select id="cust-timeslot">
             <option value="">-- Choose a time slot --</option>
             <option value="4:00 AM - 6:00 AM">4:00 AM - 6:00 AM (Early Morning Cut)</option>
             <option value="6:00 AM - 8:00 AM">6:00 AM - 8:00 AM</option>
@@ -812,53 +782,49 @@
 
         <div class="form-group">
           <label>Complete Address (Flat No., Building, Landmark) *</label>
-          <textarea id="cust-address" placeholder="e.g. Flat 302, Green Park Society, near Main Market" rows="3" required></textarea>
+          <textarea id="cust-address" placeholder="e.g. Flat 302, Green Park Society, near Main Market" rows="3"></textarea>
         </div>
 
         <div class="modal-actions">
           <button class="btn-cancel" onclick="closeCheckoutModal()">Cancel</button>
-          <button class="btn-checkout" style="flex: 2; justify-content: center;" onclick="goToPaymentStep()">Proceed to Payment →</button>
+          <button class="btn-checkout" style="flex: 2;" onclick="goToPaymentStep()">Continue to Payment ➔</button>
         </div>
       </div>
 
       <!-- STEP 2: UPI Payment Gateway -->
-      <div id="step-2-container" style="display: none;">
+      <div id="step-2-form" style="display: none;">
         <div class="upi-box">
-          <div class="cart-subtext" style="text-transform: uppercase; letter-spacing: 0.5px;">Payable Amount</div>
-          <div class="upi-amount-badge" id="upi-payable-amount">₹0</div>
+          <span style="font-size: 0.85rem; color: var(--text-muted); display: block;">Scan QR using GPay / PhonePe / Paytm</span>
+          <div class="qr-wrapper">
+            <img id="upi-qr-code" src="" alt="UPI Payment QR Code" />
+          </div>
+          <div style="font-weight: 800; font-size: 1.2rem; color: white;" id="pay-amount-display">Amount: ₹0.00</div>
 
-          <!-- Dynamic QR Code -->
-          <div class="qr-container">
-            <img id="upi-qr-code" src="" alt="Scan UPI QR Code" />
+          <div class="upi-id-badge">
+            <span>UPI ID: <strong id="upi-vpa">7499220437@upi</strong></span>
+            <button class="btn-copy" onclick="copyUPI()">Copy</button>
           </div>
 
-          <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.5rem;">
-            Scan QR code with GPay, PhonePe, Paytm, or BHIM
-          </p>
-
-          <div class="vpa-copy-box">
-            <span class="vpa-text" id="store-vpa">7499220437@upi</span>
-            <button class="btn-copy" onclick="copyUPI('7499220437@upi')">Copy UPI ID</button>
-          </div>
+          <a id="upi-app-link" href="#" class="btn-pay-app">
+            <span>⚡ Pay via Installed UPI App</span>
+          </a>
         </div>
 
-        <!-- Direct UPI App Button (Mobile Deep-link) -->
-        <a id="upi-app-link" href="#" class="btn-upi-app">
-          <span>📲 Pay via Installed UPI App</span>
-        </a>
-
         <div class="form-group">
-          <label>Enter Payment Ref / UTR / Txn ID *</label>
-          <input type="text" id="upi-utr" placeholder="e.g. 123456789012 (12-digit Ref ID)" required />
+          <label>Enter 12-Digit Transaction / UTR Ref Number *</label>
+          <input type="text" id="upi-utr" placeholder="e.g. 328901283912" maxlength="12" />
+          <span style="font-size: 0.72rem; color: var(--text-muted); display: block; margin-top: 0.25rem;">
+            You can find this 12-digit number in your UPI app receipt after payment.
+          </span>
         </div>
 
         <div class="modal-actions">
           <button class="btn-cancel" onclick="backToDeliveryStep()">← Back</button>
-          <button class="btn-whatsapp" style="flex: 2;" onclick="sendWhatsAppOrder()">
+          <button class="btn-whatsapp-confirm" onclick="sendWhatsAppOrder()">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
               <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
             </svg>
-            <span>Confirm &amp; Send Order</span>
+            <span>Confirm Order on WhatsApp</span>
           </button>
         </div>
       </div>
@@ -866,12 +832,12 @@
   </div>
 
   <script>
-    // Configuration Variables
+    // Configuration Settings
     const SHOP_WHATSAPP_NUMBER = "917499220437"; 
     const STORE_UPI_ID = "7499220437@upi";
-    const STORE_NAME = "Fresh Cuts";
+    const STORE_NAME = "Fresh Cuts Meat Store";
 
-    // Deliverable Areas List
+    // Deliverable Areas
     const deliverableAreas = [
       "Hadapsar",
       "Kondhwa",
@@ -883,13 +849,13 @@
       "Chinchwad"
     ];
 
-    // Product List with High-Res Images
+    // Products Data
     const products = [
       { 
         id: 1, 
         name: "Fresh Whole Chicken (Curry Cut)", 
         desc: "Skinless, tender fresh cut chicken pieces suitable for everyday curry.", 
-        pricePerKg: 220,
+        pricePerKg: 1.00,
         image: "https://images.unsplash.com/photo-1587593810167-a84920ea0781?auto=format&fit=crop&w=600&q=80"
       },
       { 
@@ -931,18 +897,6 @@
 
     let cart = [];
 
-    // Notification Banner
-    function showNotification(msg, icon = "🛒") {
-      const toast = document.getElementById('toast');
-      document.getElementById('toast-message').textContent = msg;
-      document.getElementById('toast-icon').textContent = icon;
-      toast.classList.add('active');
-      setTimeout(() => {
-        toast.classList.remove('active');
-      }, 3000);
-    }
-
-    // Render Deliverable Areas
     function renderDeliveryAreas() {
       const tagsContainer = document.getElementById('area-tags-container');
       const areaSelect = document.getElementById('cust-area');
@@ -959,14 +913,13 @@
       });
     }
 
-    // Render Product Cards
     function renderProducts() {
       const grid = document.getElementById('product-grid');
       grid.innerHTML = products.map(p => `
         <div class="product-card">
           <div class="img-wrapper">
             <span class="badge-fresh">Fresh Today</span>
-            <img src="${p.image}" alt="${p.name}" class="product-img" loading="lazy" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1e293b/ff3b30?text=Fresh+Cut';" />
+            <img src="${p.image}" alt="${p.name}" class="product-img" loading="lazy" />
           </div>
           <div class="product-info">
             <div>
@@ -975,17 +928,17 @@
               </div>
               <p class="product-desc">${p.desc}</p>
               <div class="price-row">
-                <div class="price-tag">₹${p.pricePerKg} <span class="price-unit">/ kg</span></div>
+                <div class="price-tag">₹${p.pricePerKg.toFixed(2)} <span class="price-unit">/ kg</span></div>
               </div>
             </div>
             <div>
               <div class="options-group">
                 <label>Select Weight:</label>
                 <select id="weight-${p.id}">
-                  <option value="0.5">500g (₹${p.pricePerKg * 0.5})</option>
-                  <option value="1" selected>1.0 kg (₹${p.pricePerKg})</option>
-                  <option value="1.5">1.5 kg (₹${p.pricePerKg * 1.5})</option>
-                  <option value="2">2.0 kg (₹${p.pricePerKg * 2})</option>
+                  <option value="0.5">500g (₹${(p.pricePerKg * 0.5).toFixed(2)})</option>
+                  <option value="1" selected>1.0 kg (₹${(p.pricePerKg).toFixed(2)})</option>
+                  <option value="1.5">1.5 kg (₹${(p.pricePerKg * 1.5).toFixed(2)})</option>
+                  <option value="2">2.0 kg (₹${(p.pricePerKg * 2).toFixed(2)})</option>
                 </select>
               </div>
               <button class="btn-add" onclick="addToCart(${p.id})">
@@ -997,7 +950,6 @@
       `).join('');
     }
 
-    // Add Item to Cart
     function addToCart(productId) {
       const product = products.find(p => p.id === productId);
       const weightSelect = document.getElementById(`weight-${productId}`);
@@ -1019,22 +971,14 @@
       }
 
       updateCartUI();
-      const weightStr = weight >= 1 ? `${weight}kg` : `${weight * 1000}g`;
-      showNotification(`Added ${product.name} (${weightStr}) to cart!`, "✅");
     }
 
-    // Calculate Total Cart Price
-    function getCartTotal() {
-      return cart.reduce((sum, item) => sum + (item.pricePerItem * item.qty), 0);
-    }
-
-    // Update Cart Floating Bar UI
     function updateCartUI() {
       const totalCount = cart.reduce((sum, item) => sum + item.qty, 0);
-      const totalPrice = getCartTotal();
+      const totalPrice = cart.reduce((sum, item) => sum + (item.pricePerItem * item.qty), 0);
 
       document.getElementById('cart-count').textContent = totalCount;
-      document.getElementById('cart-total').textContent = `Total: ₹${totalPrice}`;
+      document.getElementById('cart-total').textContent = `Total: ₹${totalPrice.toFixed(2)}`;
       
       if (totalCount > 0) {
         document.getElementById('cart-items-summary').textContent = `${totalCount} item(s) ready for order`;
@@ -1043,18 +987,33 @@
       }
     }
 
-    // Modal & Multi-Step Logic
+    function showAlert(msg) {
+      const banner = document.getElementById('alert-banner');
+      banner.textContent = msg;
+      banner.style.display = 'block';
+    }
+
+    function hideAlert() {
+      const banner = document.getElementById('alert-banner');
+      banner.style.display = 'none';
+    }
+
     function openCheckoutModal() {
       if (cart.length === 0) {
-        showNotification("Please add at least one product to your cart first.", "⚠️");
+        alert("Please add at least one product to your cart first.");
         return;
       }
+      hideAlert();
       backToDeliveryStep();
       document.getElementById('checkout-modal').style.display = 'flex';
     }
 
     function closeCheckoutModal() {
       document.getElementById('checkout-modal').style.display = 'none';
+    }
+
+    function getTotalCartPrice() {
+      return cart.reduce((sum, item) => sum + (item.pricePerItem * item.qty), 0);
     }
 
     function goToPaymentStep() {
@@ -1065,50 +1024,42 @@
       const address = document.getElementById('cust-address').value.trim();
 
       if (!name || !phone || !area || !timeslot || !address) {
-        showNotification("Please fill in all delivery details before proceeding.", "❌");
+        showAlert("Please fill in all required delivery details before proceeding.");
         return;
       }
 
-      const total = getCartTotal();
+      hideAlert();
+      const total = getTotalCartPrice().toFixed(2);
 
-      // Setup Step 2 UI
-      document.getElementById('step-1-container').style.display = 'none';
-      document.getElementById('step-2-container').style.display = 'block';
-      document.getElementById('modal-title').textContent = '2. UPI Payment Gateway';
-      document.getElementById('pill-step-2').classList.add('active');
+      // Setup UPI Link & QR
+      const upiUrl = `upi://pay?pa=${STORE_UPI_ID}&pn=${encodeURIComponent(STORE_NAME)}&am=${total}&cu=INR`;
+      const qrApi = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(upiUrl)}`;
 
-      document.getElementById('upi-payable-amount').textContent = `₹${total}`;
+      document.getElementById('upi-qr-code').src = qrApi;
+      document.getElementById('pay-amount-display').textContent = `Amount to Pay: ₹${total}`;
+      document.getElementById('upi-app-link').href = upiUrl;
 
-      // Construct UPI Deep Link URL
-      const upiString = `upi://pay?pa=${STORE_UPI_ID}&pn=${encodeURIComponent(STORE_NAME)}&am=${total}&cu=INR&tn=${encodeURIComponent('Meat Order Payment')}`;
-      
-      // Dynamic QR Code API
-      const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(upiString)}`;
-      document.getElementById('upi-qr-code').src = qrApiUrl;
-
-      // Set App Deep Link
-      document.getElementById('upi-app-link').href = upiString;
+      // Switch views
+      document.getElementById('step-1-form').style.display = 'none';
+      document.getElementById('step-2-form').style.display = 'block';
+      document.getElementById('step-1-indicator').classList.remove('active');
+      document.getElementById('step-2-indicator').classList.add('active');
     }
 
     function backToDeliveryStep() {
-      document.getElementById('step-1-container').style.display = 'block';
-      document.getElementById('step-2-container').style.display = 'none';
-      document.getElementById('modal-title').textContent = '1. Delivery Details';
-      document.getElementById('pill-step-2').classList.remove('active');
+      hideAlert();
+      document.getElementById('step-1-form').style.display = 'block';
+      document.getElementById('step-2-form').style.display = 'none';
+      document.getElementById('step-1-indicator').classList.add('active');
+      document.getElementById('step-2-indicator').classList.remove('active');
     }
 
-    // Copy UPI ID to clipboard
-    function copyUPI(text) {
-      const tempInput = document.createElement('input');
-      tempInput.value = text;
-      document.body.appendChild(tempInput);
-      tempInput.select();
-      document.execCommand('copy');
-      document.body.removeChild(tempInput);
-      showNotification("UPI ID copied to clipboard!", "📋");
+    function copyUPI() {
+      navigator.clipboard.writeText(STORE_UPI_ID).then(() => {
+        alert("UPI ID copied to clipboard!");
+      });
     }
 
-    // Send Order via WhatsApp
     function sendWhatsAppOrder() {
       const name = document.getElementById('cust-name').value.trim();
       const phone = document.getElementById('cust-phone').value.trim();
@@ -1117,35 +1068,35 @@
       const address = document.getElementById('cust-address').value.trim();
       const utr = document.getElementById('upi-utr').value.trim();
 
-      if (!utr) {
-        showNotification("Please enter payment UTR / Reference ID.", "⚠️");
+      if (!utr || utr.length < 6) {
+        showAlert("Please enter a valid UPI Transaction / UTR reference number (at least 6-12 digits).");
         return;
       }
 
-      let message = `🛒 *NEW ORDER - FRESH CUTS*\n`;
+      let message = `🛒 *NEW FRESH CUTS ORDER*\n`;
       message += `-------------------------\n`;
       message += `💳 *PAYMENT STATUS: PAID VIA UPI*\n`;
-      message += `🔖 Payment Ref / UTR: *${utr}*\n`;
+      message += `🔢 *UPI Ref / UTR:* ${utr}\n`;
       message += `-------------------------\n`;
-      message += `👤 *Customer:* ${name}\n`;
-      message += `📞 *Phone:* ${phone}\n`;
-      message += `📍 *Area:* ${area}\n`;
+      message += `👤 *Customer Name:* ${name}\n`;
+      message += `📞 *Phone Number:* ${phone}\n`;
+      message += `📍 *Delivery Area:* ${area}\n`;
       message += `⏰ *Delivery Slot:* ${timeslot}\n`;
       message += `🏠 *Address:* ${address}\n\n`;
-      message += `*Ordered Items:*\n`;
+      message += `*Order Items:*\n`;
 
       let totalPrice = 0;
       cart.forEach((item, index) => {
         const itemTotal = item.pricePerItem * item.qty;
         totalPrice += itemTotal;
         const weightLabel = item.weight >= 1 ? `${item.weight}kg` : `${item.weight * 1000}g`;
-        message += `${index + 1}. ${item.name} (${weightLabel}) x ${item.qty} = ₹${itemTotal}\n`;
+        message += `${index + 1}. ${item.name} (${weightLabel}) x ${item.qty} = ₹${itemTotal.toFixed(2)}\n`;
       });
 
       message += `-------------------------\n`;
-      message += `💰 *Total Amount Paid: ₹${totalPrice}*\n`;
+      message += `💰 *Total Amount Paid: ₹${totalPrice.toFixed(2)}*\n`;
       message += `-------------------------\n`;
-      message += `Please confirm order receipt and schedule delivery.`;
+      message += `Please verify payment UTR and confirm dispatch.`;
 
       const encodedMsg = encodeURIComponent(message);
       const whatsappURL = `https://wa.me/${SHOP_WHATSAPP_NUMBER}?text=${encodedMsg}`;
@@ -1154,19 +1105,9 @@
       closeCheckoutModal();
     }
 
-    // Close Modal on Outside Click
-    window.onclick = function(event) {
-      const modal = document.getElementById('checkout-modal');
-      if (event.target === modal) {
-        closeCheckoutModal();
-      }
-    };
-
     // Initialize Page
-    window.onload = function() {
-      renderDeliveryAreas();
-      renderProducts();
-    };
+    renderDeliveryAreas();
+    renderProducts();
   </script>
 </body>
 </html>

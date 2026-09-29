@@ -3,103 +3,187 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fresh Cuts Meat & Chicken Store</title>
+  <title>Fresh Cuts | Premium Meat & Chicken Store</title>
   <style>
     :root {
-      --bg: #0f172a;
-      --card-bg: #1e293b;
-      --accent: #ef4444; /* Red meat accent */
-      --accent-hover: #dc2626;
-      --whatsapp: #22c55e; /* WhatsApp green */
-      --whatsapp-hover: #16a34a;
-      --text: #f8fafc;
+      --bg: #0b0f19;
+      --surface: #151c2c;
+      --surface-card: #1e293b;
+      --surface-hover: #26334d;
+      --accent: #ff3b30;
+      --accent-glow: rgba(255, 59, 48, 0.35);
+      --accent-secondary: #ff6b00;
+      --whatsapp: #25d366;
+      --whatsapp-glow: rgba(37, 211, 102, 0.35);
+      --text-main: #f8fafc;
       --text-muted: #94a3b8;
-      --border: #334155;
+      --border-color: rgba(255, 255, 255, 0.08);
+      --border-focus: rgba(255, 59, 48, 0.5);
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: system-ui, -apple-system, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     }
 
     body {
       background-color: var(--bg);
-      color: var(--text);
-      padding-bottom: 100px;
+      color: var(--text-main);
+      padding-bottom: 120px;
+      line-height: 1.5;
     }
 
+    /* --- HEADER --- */
     header {
-      background-color: var(--card-bg);
-      border-bottom: 1px solid var(--border);
-      padding: 1rem 1.5rem;
+      background: rgba(21, 28, 44, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-color);
+      padding: 0.9rem 1.5rem;
       position: sticky;
       top: 0;
-      z-index: 10;
+      z-index: 50;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
 
     .brand {
-      font-size: 1.25rem;
-      font-weight: bold;
-      color: var(--accent);
+      font-size: 1.35rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, #ffffff 0%, var(--accent) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .cart-indicator {
+      background: var(--surface-card);
+      border: 1px solid var(--border-color);
+      padding: 0.4rem 0.9rem;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .cart-indicator:hover {
+      border-color: var(--accent);
+      box-shadow: 0 0 12px var(--accent-glow);
+    }
+
+    .cart-badge {
+      background: linear-gradient(135deg, var(--accent), var(--accent-secondary));
+      color: white;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.15rem 0.55rem;
+      border-radius: 999px;
+    }
+
+    /* --- LAYOUT --- */
+    .container {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 1.5rem 1rem;
+    }
+
+    /* --- HERO BANNER --- */
+    .hero {
+      position: relative;
+      background: linear-gradient(135deg, rgba(255, 59, 48, 0.12) 0%, rgba(255, 107, 0, 0.05) 50%, rgba(15, 23, 42, 0) 100%), var(--surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 2.5rem 1.5rem;
+      text-align: center;
+      margin-bottom: 2rem;
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 300px;
+      height: 300px;
+      background: var(--accent);
+      filter: blur(140px);
+      opacity: 0.25;
+      pointer-events: none;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: rgba(255, 59, 48, 0.15);
+      border: 1px solid rgba(255, 59, 48, 0.3);
+      color: #ff6b6b;
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 0.35rem 0.85rem;
+      border-radius: 999px;
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .hero h1 {
+      font-size: 2.2rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      margin-bottom: 0.6rem;
+    }
+
+    .hero p {
+      color: var(--text-muted);
+      font-size: 1rem;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* --- DELIVERY ZONES --- */
+    .delivery-zones {
+      background-color: var(--surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .delivery-zones-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.85rem;
+    }
+
+    .delivery-zones h3 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-main);
       display: flex;
       align-items: center;
       gap: 0.5rem;
     }
 
-    .cart-badge {
-      background-color: var(--accent);
-      color: white;
-      padding: 0.2rem 0.6rem;
-      border-radius: 999px;
-      font-size: 0.85rem;
-      font-weight: bold;
-    }
-
-    .container {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 1.5rem 1rem;
-    }
-
-    .hero {
-      background: linear-gradient(180deg, rgba(239, 68, 68, 0.15) 0%, rgba(15, 23, 42, 0) 100%);
-      text-align: center;
-      padding: 2rem 1rem;
-      border-radius: 12px;
-      margin-bottom: 1.5rem;
-    }
-
-    .hero h1 {
-      font-size: 1.8rem;
-      margin-bottom: 0.5rem;
-    }
-
-    .hero p {
+    .delivery-zones-tagline {
+      font-size: 0.75rem;
       color: var(--text-muted);
-      font-size: 0.95rem;
-    }
-
-    /* Delivery Areas Display */
-    .delivery-zones {
-      background-color: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 1rem;
-      margin-bottom: 2rem;
-    }
-
-    .delivery-zones h3 {
-      font-size: 0.95rem;
-      color: var(--accent);
-      margin-bottom: 0.5rem;
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
     }
 
     .area-tags {
@@ -109,36 +193,96 @@
     }
 
     .area-tag {
-      background-color: var(--bg);
-      border: 1px solid var(--border);
-      color: var(--text);
-      font-size: 0.8rem;
-      padding: 0.3rem 0.75rem;
+      background: var(--surface-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      font-size: 0.82rem;
+      font-weight: 500;
+      padding: 0.4rem 0.85rem;
       border-radius: 999px;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      transition: all 0.2s;
     }
 
-    /* Product Grid */
+    .area-tag span {
+      color: var(--whatsapp);
+      font-size: 0.75rem;
+    }
+
+    .area-tag:hover {
+      border-color: rgba(255, 255, 255, 0.2);
+      transform: translateY(-1px);
+    }
+
+    /* --- SECTION HEADINGS --- */
+    .section-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* --- PRODUCT GRID --- */
     .product-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
       gap: 1.5rem;
     }
 
     .product-card {
-      background-color: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 12px;
+      background-color: var(--surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
       overflow: hidden;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
+      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+      position: relative;
+    }
+
+    .product-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(255, 59, 48, 0.4);
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
+    }
+
+    .img-wrapper {
+      position: relative;
+      width: 100%;
+      height: 190px;
+      overflow: hidden;
+      background: var(--surface-card);
     }
 
     .product-img {
       width: 100%;
-      height: 180px;
+      height: 100%;
       object-fit: cover;
-      background-color: #334155;
+      transition: transform 0.4s ease;
+    }
+
+    .product-card:hover .product-img {
+      transform: scale(1.05);
+    }
+
+    .badge-fresh {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #fff;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 0.25rem 0.6rem;
+      border-radius: 999px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
     .product-info {
@@ -150,76 +294,119 @@
     }
 
     .product-header h3 {
-      font-size: 1.15rem;
-      color: var(--text);
-      margin-bottom: 0.25rem;
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 0.35rem;
+      color: var(--text-main);
     }
 
     .product-desc {
       font-size: 0.85rem;
       color: var(--text-muted);
+      margin-bottom: 1.1rem;
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .price-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
       margin-bottom: 1rem;
     }
 
     .price-tag {
-      font-size: 1.1rem;
-      font-weight: bold;
+      font-size: 1.25rem;
+      font-weight: 800;
       color: var(--accent);
-      margin-bottom: 0.75rem;
+    }
+
+    .price-unit {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-weight: 400;
     }
 
     .options-group {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
       margin-bottom: 1rem;
+    }
+
+    .options-group label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.4rem;
     }
 
     select, input[type="text"], input[type="tel"], textarea {
       width: 100%;
-      padding: 0.65rem;
+      padding: 0.7rem 0.9rem;
       background-color: var(--bg);
-      color: var(--text);
-      border: 1px solid var(--border);
-      border-radius: 6px;
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
       outline: none;
       font-size: 0.9rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
     }
 
     select:focus, input:focus, textarea:focus {
       border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-glow);
     }
 
     .btn-add {
-      background-color: var(--accent);
+      background: linear-gradient(135deg, var(--accent), #d92d20);
       color: white;
       border: none;
-      padding: 0.65rem 1rem;
-      border-radius: 6px;
-      font-weight: bold;
+      padding: 0.75rem 1rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.9rem;
+      font-weight: 700;
       cursor: pointer;
       width: 100%;
-      transition: background 0.2s;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      box-shadow: 0 4px 12px var(--accent-glow);
     }
 
     .btn-add:hover {
-      background-color: var(--accent-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(255, 59, 48, 0.5);
     }
 
-    /* Floating Cart Bar */
+    .btn-add:active {
+      transform: translateY(0);
+    }
+
+    /* --- FLOATING CART BAR --- */
     .cart-bar {
       position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background-color: var(--card-bg);
-      border-top: 1px solid var(--border);
-      padding: 1rem;
+      bottom: 1.25rem;
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(100% - 2.5rem);
+      max-width: 800px;
+      background: rgba(21, 28, 44, 0.92);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 0.85rem 1.25rem;
+      border-radius: var(--radius-lg);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.4);
-      z-index: 20;
+      box-shadow: var(--shadow-lg), 0 0 20px rgba(0, 0, 0, 0.6);
+      z-index: 40;
     }
 
     .cart-summary {
@@ -228,29 +415,38 @@
     }
 
     .cart-total {
-      font-size: 1.1rem;
-      font-weight: bold;
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+
+    .cart-subtext {
+      font-size: 0.78rem;
+      color: var(--text-muted);
     }
 
     .btn-whatsapp {
-      background-color: var(--whatsapp);
+      background: linear-gradient(135deg, var(--whatsapp), #1da851);
       color: white;
       border: none;
-      padding: 0.75rem 1.25rem;
-      border-radius: 8px;
-      font-weight: bold;
+      padding: 0.75rem 1.4rem;
+      border-radius: var(--radius-md);
+      font-weight: 700;
+      font-size: 0.95rem;
       cursor: pointer;
       display: flex;
       align-items: center;
-      gap: 0.5rem;
-      font-size: 0.95rem;
+      gap: 0.6rem;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 14px var(--whatsapp-glow);
     }
 
     .btn-whatsapp:hover {
-      background-color: var(--whatsapp-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(37, 211, 102, 0.5);
     }
 
-    /* Modal Styling */
+    /* --- MODAL --- */
     .modal {
       display: none;
       position: fixed;
@@ -258,88 +454,175 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.75);
+      background: rgba(11, 15, 25, 0.85);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
       justify-content: center;
       align-items: center;
       padding: 1rem;
       z-index: 100;
+      animation: fadeIn 0.2s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
 
     .modal-content {
-      background-color: var(--card-bg);
-      padding: 1.5rem;
-      border-radius: 12px;
+      background-color: var(--surface);
+      padding: 1.75rem;
+      border-radius: var(--radius-lg);
       width: 100%;
-      max-width: 450px;
-      border: 1px solid var(--border);
+      max-width: 480px;
+      border: 1px solid var(--border-color);
       max-height: 90vh;
       overflow-y: auto;
+      box-shadow: var(--shadow-lg);
+      animation: slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    .modal-content h2 {
-      margin-bottom: 1rem;
+    @keyframes slideUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.25rem;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 0.75rem;
+    }
+
+    .modal-header h2 {
       font-size: 1.25rem;
+      font-weight: 800;
+    }
+
+    .close-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.5rem;
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    .close-btn:hover {
+      color: var(--text-main);
     }
 
     .form-group {
-      margin-bottom: 0.85rem;
+      margin-bottom: 1rem;
     }
 
     .form-group label {
       display: block;
       font-size: 0.8rem;
+      font-weight: 600;
       color: var(--text-muted);
-      margin-bottom: 0.3rem;
+      margin-bottom: 0.4rem;
     }
 
     .modal-actions {
       display: flex;
-      gap: 0.5rem;
-      margin-top: 1.25rem;
+      gap: 0.75rem;
+      margin-top: 1.5rem;
     }
 
     .btn-cancel {
       background: transparent;
-      border: 1px solid var(--border);
+      border: 1px solid var(--border-color);
       color: var(--text-muted);
-      padding: 0.6rem;
-      border-radius: 6px;
+      padding: 0.75rem;
+      border-radius: var(--radius-sm);
+      font-weight: 600;
       cursor: pointer;
       flex: 1;
+      transition: all 0.2s;
+    }
+
+    .btn-cancel:hover {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-main);
+    }
+
+    /* Mobile Responsive Tweaks */
+    @media (max-width: 600px) {
+      .hero {
+        padding: 1.75rem 1rem;
+      }
+
+      .hero h1 {
+        font-size: 1.6rem;
+      }
+
+      .cart-bar {
+        width: calc(100% - 1.5rem);
+        padding: 0.75rem 1rem;
+        bottom: 0.75rem;
+      }
+
+      .btn-whatsapp {
+        padding: 0.65rem 1rem;
+        font-size: 0.85rem;
+      }
+
+      .product-grid {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
 <body>
 
+  <!-- Header -->
   <header>
-    <div class="brand">🍗 Fresh Cuts Meat</div>
-    <div class="cart-badge" id="cart-count">0 items</div>
+    <div class="brand">
+      <span>🍗</span> Fresh Cuts
+    </div>
+    <div class="cart-indicator" onclick="openCheckoutModal()">
+      <span style="font-size: 0.9rem; font-weight: 600;">Cart</span>
+      <span class="cart-badge" id="cart-count">0</span>
+    </div>
   </header>
 
   <div class="container">
+    <!-- Hero Banner -->
     <div class="hero">
-      <h1>Fresh &amp; Hygienic Chicken Delivered</h1>
-      <p>Select cuts, pick a delivery slot (4 AM – 10 PM), and order on WhatsApp!</p>
+      <div class="hero-badge">⚡ Express Delivery in Pune</div>
+      <h1>Fresh &amp; Hygienic Meat Delivered</h1>
+      <p>Hand-picked, 100% antibiotic-free cuts delivered straight to your kitchen. Pick your preferred delivery slot (4 AM – 10 PM) and check out instantly on WhatsApp!</p>
     </div>
 
     <!-- Delivery Area Display -->
     <div class="delivery-zones">
-      <h3>📍 Deliverable Areas in Pune</h3>
+      <div class="delivery-zones-header">
+        <h3>📍 Serviced Delivery Areas in Pune</h3>
+        <span class="delivery-zones-tagline">Same-day delivery active</span>
+      </div>
       <div class="area-tags" id="area-tags-container"></div>
     </div>
 
-    <h2>Our Products</h2>
-    <br>
+    <!-- Products -->
+    <div class="section-title">
+      <span>Featured Fresh Cuts</span>
+    </div>
     <div class="product-grid" id="product-grid"></div>
   </div>
 
-  <!-- Bottom Checkout Bar -->
+  <!-- Bottom Floating Checkout Bar -->
   <div class="cart-bar">
     <div class="cart-summary">
       <span class="cart-total" id="cart-total">Total: ₹0</span>
-      <span style="font-size: 0.8rem; color: var(--text-muted);" id="cart-items-summary">No items selected</span>
+      <span class="cart-subtext" id="cart-items-summary">No items in cart</span>
     </div>
     <button class="btn-whatsapp" onclick="openCheckoutModal()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+      </svg>
       <span>Order on WhatsApp</span>
     </button>
   </div>
@@ -347,8 +630,11 @@
   <!-- Order Details Modal -->
   <div class="modal" id="checkout-modal">
     <div class="modal-content">
-      <h2>Delivery &amp; Checkout</h2>
-      
+      <div class="modal-header">
+        <h2>Delivery &amp; Checkout</h2>
+        <button class="close-btn" onclick="closeCheckoutModal()">&times;</button>
+      </div>
+
       <div class="form-group">
         <label>Your Name *</label>
         <input type="text" id="cust-name" placeholder="e.g. Rahul Sharma" required />
@@ -395,8 +681,8 @@
   </div>
 
   <script>
-    // Replace with your shop's WhatsApp phone number (with country code, no + or spaces)
-    const SHOP_WHATSAPP_NUMBER = "919876543210"; 
+    // Updated WhatsApp Shop Number
+    const SHOP_WHATSAPP_NUMBER = "917499220437"; 
 
     // Deliverable Areas List
     const deliverableAreas = [
@@ -410,7 +696,7 @@
       "Chinchwad"
     ];
 
-    // Product List with Photos
+    // Product List with High-Res Unsplash Images
     const products = [
       { 
         id: 1, 
@@ -464,7 +750,7 @@
       const areaSelect = document.getElementById('cust-area');
 
       tagsContainer.innerHTML = deliverableAreas.map(area => `
-        <span class="area-tag">✓ ${area}</span>
+        <div class="area-tag"><span>✓</span> ${area}</div>
       `).join('');
 
       deliverableAreas.forEach(area => {
@@ -480,24 +766,33 @@
       const grid = document.getElementById('product-grid');
       grid.innerHTML = products.map(p => `
         <div class="product-card">
-          <img src="${p.image}" alt="${p.name}" class="product-img" loading="lazy" />
+          <div class="img-wrapper">
+            <span class="badge-fresh">Fresh Today</span>
+            <img src="${p.image}" alt="${p.name}" class="product-img" loading="lazy" />
+          </div>
           <div class="product-info">
-            <div class="product-header">
-              <h3>${p.name}</h3>
+            <div>
+              <div class="product-header">
+                <h3>${p.name}</h3>
+              </div>
               <p class="product-desc">${p.desc}</p>
+              <div class="price-row">
+                <div class="price-tag">₹${p.pricePerKg} <span class="price-unit">/ kg</span></div>
+              </div>
             </div>
             <div>
-              <div class="price-tag">₹${p.pricePerKg} / kg</div>
               <div class="options-group">
-                <label style="font-size: 0.8rem; color: var(--text-muted);">Select Weight:</label>
+                <label>Select Weight:</label>
                 <select id="weight-${p.id}">
                   <option value="0.5">500g (₹${p.pricePerKg * 0.5})</option>
-                  <option value="1" selected>1 kg (₹${p.pricePerKg})</option>
+                  <option value="1" selected>1.0 kg (₹${p.pricePerKg})</option>
                   <option value="1.5">1.5 kg (₹${p.pricePerKg * 1.5})</option>
-                  <option value="2">2 kg (₹${p.pricePerKg * 2})</option>
+                  <option value="2">2.0 kg (₹${p.pricePerKg * 2})</option>
                 </select>
               </div>
-              <button class="btn-add" onclick="addToCart(${p.id})">Add to Cart</button>
+              <button class="btn-add" onclick="addToCart(${p.id})">
+                <span>+ Add to Cart</span>
+              </button>
             </div>
           </div>
         </div>
@@ -533,13 +828,13 @@
       const totalCount = cart.reduce((sum, item) => sum + item.qty, 0);
       const totalPrice = cart.reduce((sum, item) => sum + (item.pricePerItem * item.qty), 0);
 
-      document.getElementById('cart-count').textContent = `${totalCount} items`;
+      document.getElementById('cart-count').textContent = totalCount;
       document.getElementById('cart-total').textContent = `Total: ₹${totalPrice}`;
       
       if (totalCount > 0) {
-        document.getElementById('cart-items-summary').textContent = `${totalCount} item(s) ready for checkout`;
+        document.getElementById('cart-items-summary').textContent = `${totalCount} item(s) ready for order`;
       } else {
-        document.getElementById('cart-items-summary').textContent = 'No items selected';
+        document.getElementById('cart-items-summary').textContent = 'No items in cart';
       }
     }
 
@@ -555,6 +850,14 @@
     function closeCheckoutModal() {
       document.getElementById('checkout-modal').style.display = 'none';
     }
+
+    // Close modal on outer click
+    window.onclick = function(event) {
+      const modal = document.getElementById('checkout-modal');
+      if (event.target === modal) {
+        closeCheckoutModal();
+      }
+    };
 
     // Send Order to WhatsApp
     function sendWhatsAppOrder() {
@@ -599,7 +902,7 @@
       closeCheckoutModal();
     }
 
-    // Initialize App
+    // Initialize
     renderDeliveryAreas();
     renderProducts();
   </script>

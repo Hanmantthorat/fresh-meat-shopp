@@ -15,8 +15,6 @@
       --accent-secondary: #ff6b00;
       --whatsapp: #25d366;
       --whatsapp-glow: rgba(37, 211, 102, 0.35);
-      --upi-color: #5f259f;
-      --upi-glow: rgba(95, 37, 159, 0.35);
       --text-main: #f8fafc;
       --text-muted: #94a3b8;
       --border-color: rgba(255, 255, 255, 0.08);
@@ -419,7 +417,7 @@
     }
 
     .btn-checkout {
-      background: linear-gradient(135deg, var(--accent), var(--accent-secondary));
+      background: linear-gradient(135deg, var(--whatsapp), #1da851);
       color: white;
       border: none;
       padding: 0.75rem 1.4rem;
@@ -431,14 +429,14 @@
       align-items: center;
       gap: 0.6rem;
       transition: all 0.2s ease;
-      box-shadow: 0 4px 14px var(--accent-glow);
+      box-shadow: 0 4px 14px var(--whatsapp-glow);
     }
 
     .btn-checkout:hover {
       transform: translateY(-1px);
     }
 
-    /* --- MODAL & CHECKOUT STEPS --- */
+    /* --- MODAL --- */
     .modal {
       display: none;
       position: fixed;
@@ -501,46 +499,6 @@
       color: var(--text-main);
     }
 
-    .step-tracker {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 1.25rem;
-      background: var(--bg);
-      padding: 0.5rem 0.75rem;
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--border-color);
-    }
-
-    .step-item {
-      font-size: 0.8rem;
-      font-weight: 700;
-      color: var(--text-muted);
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-    }
-
-    .step-item.active {
-      color: var(--accent);
-    }
-
-    .step-number {
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      background: var(--surface-card);
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.75rem;
-    }
-
-    .step-item.active .step-number {
-      background: var(--accent);
-      color: white;
-    }
-
     .form-group {
       margin-bottom: 1rem;
     }
@@ -551,75 +509,6 @@
       font-weight: 600;
       color: var(--text-muted);
       margin-bottom: 0.4rem;
-    }
-
-    /* UPI Gateway Cards */
-    .upi-box {
-      background: rgba(95, 37, 159, 0.08);
-      border: 1px solid rgba(95, 37, 159, 0.3);
-      border-radius: var(--radius-md);
-      padding: 1.25rem;
-      text-align: center;
-      margin-bottom: 1.25rem;
-    }
-
-    .qr-wrapper {
-      background: white;
-      padding: 0.75rem;
-      border-radius: var(--radius-md);
-      display: inline-block;
-      margin: 0.75rem 0;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-    }
-
-    .qr-wrapper img {
-      width: 170px;
-      height: 170px;
-      display: block;
-    }
-
-    .upi-id-badge {
-      background: var(--surface-card);
-      border: 1px dashed rgba(255,255,255,0.2);
-      padding: 0.5rem 0.8rem;
-      border-radius: var(--radius-sm);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-size: 0.85rem;
-      margin-top: 0.5rem;
-    }
-
-    .btn-copy {
-      background: rgba(255,255,255,0.1);
-      border: none;
-      color: white;
-      padding: 0.2rem 0.6rem;
-      border-radius: 4px;
-      font-size: 0.75rem;
-      cursor: pointer;
-    }
-
-    .btn-copy:hover {
-      background: var(--accent);
-    }
-
-    .btn-pay-app {
-      background: linear-gradient(135deg, var(--upi-color), #802bb1);
-      color: white;
-      border: none;
-      padding: 0.75rem;
-      border-radius: var(--radius-sm);
-      font-weight: 700;
-      font-size: 0.9rem;
-      width: 100%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      margin-top: 0.75rem;
-      box-shadow: 0 4px 14px var(--upi-glow);
     }
 
     .modal-actions {
@@ -646,7 +535,7 @@
       padding: 0.75rem;
       border-radius: var(--radius-sm);
       font-weight: 700;
-      font-size: 0.9rem;
+      font-size: 0.95rem;
       cursor: pointer;
       flex: 2;
       display: flex;
@@ -656,7 +545,6 @@
       box-shadow: 0 4px 14px var(--whatsapp-glow);
     }
 
-    /* Notification Alert Box */
     .alert-banner {
       display: none;
       background: rgba(255, 59, 48, 0.15);
@@ -694,7 +582,7 @@
     <div class="hero">
       <div class="hero-badge">⚡ Express Delivery in Pune</div>
       <h1>Fresh &amp; Hygienic Meat Delivered</h1>
-      <p>100% Antibiotic-free cuts. Select your delivery slot (4 AM – 10 PM), complete UPI payment, and receive instant confirmation on WhatsApp!</p>
+      <p>100% Antibiotic-free chicken and fresh mutton cuts. Place your order directly on WhatsApp and receive payment scanner instantly!</p>
     </div>
 
     <!-- Delivery Area Display -->
@@ -720,53 +608,42 @@
       <span class="cart-subtext" id="cart-items-summary">No items in cart</span>
     </div>
     <button class="btn-checkout" onclick="openCheckoutModal()">
-      <span>Proceed to Checkout ➔</span>
+      <span>Order on WhatsApp ➔</span>
     </button>
   </div>
 
-  <!-- Multi-Step Checkout Modal -->
+  <!-- Checkout Modal -->
   <div class="modal" id="checkout-modal">
     <div class="modal-content">
       <div class="modal-header">
-        <h2 id="modal-title">Checkout &amp; Delivery</h2>
+        <h2>Delivery Information</h2>
         <button class="close-btn" onclick="closeCheckoutModal()">&times;</button>
-      </div>
-
-      <!-- Step Indicator -->
-      <div class="step-tracker">
-        <div class="step-item active" id="step-1-indicator">
-          <span class="step-number">1</span> Delivery Details
-        </div>
-        <div style="color: var(--text-muted); font-size: 0.8rem;">➔</div>
-        <div class="step-item" id="step-2-indicator">
-          <span class="step-number">2</span> UPI Payment
-        </div>
       </div>
 
       <div class="alert-banner" id="alert-banner"></div>
 
-      <!-- STEP 1: Delivery Information Form -->
-      <div id="step-1-form">
+      <!-- Delivery Information Form -->
+      <form id="delivery-form" onsubmit="sendWhatsAppOrder(event)">
         <div class="form-group">
           <label>Your Full Name *</label>
-          <input type="text" id="cust-name" placeholder="e.g. Rahul Sharma" />
+          <input type="text" id="cust-name" placeholder="e.g. Rahul Sharma" required />
         </div>
 
         <div class="form-group">
           <label>Phone Number *</label>
-          <input type="tel" id="cust-phone" placeholder="e.g. 9876543210" />
+          <input type="tel" id="cust-phone" placeholder="e.g. 9876543210" required />
         </div>
 
         <div class="form-group">
           <label>Select Delivery Area *</label>
-          <select id="cust-area">
+          <select id="cust-area" required>
             <option value="">-- Choose your area --</option>
           </select>
         </div>
 
         <div class="form-group">
           <label>Preferred Delivery Time Slot (4 AM – 10 PM) *</label>
-          <select id="cust-timeslot">
+          <select id="cust-timeslot" required>
             <option value="">-- Choose a time slot --</option>
             <option value="4:00 AM - 6:00 AM">4:00 AM - 6:00 AM (Early Morning Cut)</option>
             <option value="6:00 AM - 8:00 AM">6:00 AM - 8:00 AM</option>
@@ -782,60 +659,24 @@
 
         <div class="form-group">
           <label>Complete Address (Flat No., Building, Landmark) *</label>
-          <textarea id="cust-address" placeholder="e.g. Flat 302, Green Park Society, near Main Market" rows="3"></textarea>
+          <textarea id="cust-address" placeholder="e.g. Flat 302, Green Park Society, near Main Market" rows="3" required></textarea>
         </div>
 
         <div class="modal-actions">
-          <button class="btn-cancel" onclick="closeCheckoutModal()">Cancel</button>
-          <button class="btn-checkout" style="flex: 2;" onclick="goToPaymentStep()">Continue to Payment ➔</button>
-        </div>
-      </div>
-
-      <!-- STEP 2: UPI Payment Gateway -->
-      <div id="step-2-form" style="display: none;">
-        <div class="upi-box">
-          <span style="font-size: 0.85rem; color: var(--text-muted); display: block;">Scan QR using GPay / PhonePe / Paytm</span>
-          <div class="qr-wrapper">
-            <img id="upi-qr-code" src="" alt="UPI Payment QR Code" />
-          </div>
-          <div style="font-weight: 800; font-size: 1.2rem; color: white;" id="pay-amount-display">Amount: ₹0.00</div>
-
-          <div class="upi-id-badge">
-            <span>UPI ID: <strong id="upi-vpa">7499220437@upi</strong></span>
-            <button class="btn-copy" onclick="copyUPI()">Copy</button>
-          </div>
-
-          <a id="upi-app-link" href="#" class="btn-pay-app">
-            <span>⚡ Pay via Installed UPI App</span>
-          </a>
-        </div>
-
-        <div class="form-group">
-          <label>Enter 12-Digit Transaction / UTR Ref Number *</label>
-          <input type="text" id="upi-utr" placeholder="e.g. 328901283912" maxlength="12" />
-          <span style="font-size: 0.72rem; color: var(--text-muted); display: block; margin-top: 0.25rem;">
-            You can find this 12-digit number in your UPI app receipt after payment.
-          </span>
-        </div>
-
-        <div class="modal-actions">
-          <button class="btn-cancel" onclick="backToDeliveryStep()">← Back</button>
-          <button class="btn-whatsapp-confirm" onclick="sendWhatsAppOrder()">
+          <button type="button" class="btn-cancel" onclick="closeCheckoutModal()">Cancel</button>
+          <button type="submit" class="btn-whatsapp-confirm">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
               <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
             </svg>
-            <span>Confirm Order on WhatsApp</span>
+            <span>Place Order on WhatsApp</span>
           </button>
         </div>
-      </div>
+      </form>
     </div>
   </div>
 
   <script>
-    // Configuration Settings
     const SHOP_WHATSAPP_NUMBER = "917499220437"; 
-    const STORE_UPI_ID = "7499220437@upi";
-    const STORE_NAME = "Fresh Cuts Meat Store";
 
     // Deliverable Areas
     const deliverableAreas = [
@@ -860,38 +701,38 @@
       },
       { 
         id: 2, 
+        name: "Fresh Goat Mutton (Curry Cut)", 
+        desc: "Tender, fresh goat meat cut into curry-sized pieces.", 
+        pricePerKg: 780,
+        image: "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=600&q=80"
+      },
+      { 
+        id: 3, 
         name: "Chicken Breast (Boneless)", 
         desc: "Lean, high-protein boneless chicken breast fillets.", 
         pricePerKg: 340,
         image: "https://images.unsplash.com/photo-1604503468506-a8da13d82791?auto=format&fit=crop&w=600&q=80"
       },
       { 
-        id: 3, 
+        id: 4, 
         name: "Chicken Drumsticks", 
         desc: "Juicy leg pieces, perfect for fry, grilling, or biryani.", 
         pricePerKg: 280,
         image: "https://images.unsplash.com/photo-1562967914-608f82629710?auto=format&fit=crop&w=600&q=80"
       },
       { 
-        id: 4, 
+        id: 5, 
+        name: "Boneless Mutton", 
+        desc: "Prime cut boneless mutton for kebabs, fry, and rich curries.", 
+        pricePerKg: 890,
+        image: "https://images.unsplash.com/photo-1603048588665-791ca8aea617?auto=format&fit=crop&w=600&q=80"
+      },
+      { 
+        id: 6, 
         name: "Chicken Lollipop", 
         desc: "Cleaned winglet pieces shaped into crisp lollipops.", 
         pricePerKg: 300,
         image: "https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?auto=format&fit=crop&w=600&q=80"
-      },
-      { 
-        id: 5, 
-        name: "Chicken Mince (Keema)", 
-        desc: "Finely ground fresh chicken breast mince for kebabs and parathas.", 
-        pricePerKg: 350,
-        image: "https://images.unsplash.com/photo-1588168333986-5078d3ae3976?auto=format&fit=crop&w=600&q=80"
-      },
-      { 
-        id: 6, 
-        name: "Chicken Wings", 
-        desc: "Fresh chicken wings for roasting, frying, or BBQ grilling.", 
-        pricePerKg: 200,
-        image: "https://images.unsplash.com/photo-1527477396000-e27163b481c2?auto=format&fit=crop&w=600&q=80"
       }
     ];
 
@@ -1004,7 +845,6 @@
         return;
       }
       hideAlert();
-      backToDeliveryStep();
       document.getElementById('checkout-modal').style.display = 'flex';
     }
 
@@ -1012,11 +852,9 @@
       document.getElementById('checkout-modal').style.display = 'none';
     }
 
-    function getTotalCartPrice() {
-      return cart.reduce((sum, item) => sum + (item.pricePerItem * item.qty), 0);
-    }
+    function sendWhatsAppOrder(event) {
+      event.preventDefault();
 
-    function goToPaymentStep() {
       const name = document.getElementById('cust-name').value.trim();
       const phone = document.getElementById('cust-phone').value.trim();
       const area = document.getElementById('cust-area').value;
@@ -1024,66 +862,18 @@
       const address = document.getElementById('cust-address').value.trim();
 
       if (!name || !phone || !area || !timeslot || !address) {
-        showAlert("Please fill in all required delivery details before proceeding.");
-        return;
-      }
-
-      hideAlert();
-      const total = getTotalCartPrice().toFixed(2);
-
-      // Setup UPI Link & QR
-      const upiUrl = `upi://pay?pa=${STORE_UPI_ID}&pn=${encodeURIComponent(STORE_NAME)}&am=${total}&cu=INR`;
-      const qrApi = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(upiUrl)}`;
-
-      document.getElementById('upi-qr-code').src = qrApi;
-      document.getElementById('pay-amount-display').textContent = `Amount to Pay: ₹${total}`;
-      document.getElementById('upi-app-link').href = upiUrl;
-
-      // Switch views
-      document.getElementById('step-1-form').style.display = 'none';
-      document.getElementById('step-2-form').style.display = 'block';
-      document.getElementById('step-1-indicator').classList.remove('active');
-      document.getElementById('step-2-indicator').classList.add('active');
-    }
-
-    function backToDeliveryStep() {
-      hideAlert();
-      document.getElementById('step-1-form').style.display = 'block';
-      document.getElementById('step-2-form').style.display = 'none';
-      document.getElementById('step-1-indicator').classList.add('active');
-      document.getElementById('step-2-indicator').classList.remove('active');
-    }
-
-    function copyUPI() {
-      navigator.clipboard.writeText(STORE_UPI_ID).then(() => {
-        alert("UPI ID copied to clipboard!");
-      });
-    }
-
-    function sendWhatsAppOrder() {
-      const name = document.getElementById('cust-name').value.trim();
-      const phone = document.getElementById('cust-phone').value.trim();
-      const area = document.getElementById('cust-area').value;
-      const timeslot = document.getElementById('cust-timeslot').value;
-      const address = document.getElementById('cust-address').value.trim();
-      const utr = document.getElementById('upi-utr').value.trim();
-
-      if (!utr || utr.length < 6) {
-        showAlert("Please enter a valid UPI Transaction / UTR reference number (at least 6-12 digits).");
+        showAlert("Please fill in all required fields.");
         return;
       }
 
       let message = `🛒 *NEW FRESH CUTS ORDER*\n`;
-      message += `-------------------------\n`;
-      message += `💳 *PAYMENT STATUS: PAID VIA UPI*\n`;
-      message += `🔢 *UPI Ref / UTR:* ${utr}\n`;
       message += `-------------------------\n`;
       message += `👤 *Customer Name:* ${name}\n`;
       message += `📞 *Phone Number:* ${phone}\n`;
       message += `📍 *Delivery Area:* ${area}\n`;
       message += `⏰ *Delivery Slot:* ${timeslot}\n`;
       message += `🏠 *Address:* ${address}\n\n`;
-      message += `*Order Items:*\n`;
+      message += `*Order Details:*\n`;
 
       let totalPrice = 0;
       cart.forEach((item, index) => {
@@ -1094,9 +884,9 @@
       });
 
       message += `-------------------------\n`;
-      message += `💰 *Total Amount Paid: ₹${totalPrice.toFixed(2)}*\n`;
+      message += `💰 *Total Amount: ₹${totalPrice.toFixed(2)}*\n`;
       message += `-------------------------\n`;
-      message += `Please verify payment UTR and confirm dispatch.`;
+      message += `Please confirm my order and send the payment QR scanner link for payment.`;
 
       const encodedMsg = encodeURIComponent(message);
       const whatsappURL = `https://wa.me/${SHOP_WHATSAPP_NUMBER}?text=${encodedMsg}`;

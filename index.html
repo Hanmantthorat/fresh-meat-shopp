@@ -15,6 +15,8 @@
       --accent-secondary: #ff6b00;
       --whatsapp: #25d366;
       --whatsapp-glow: rgba(37, 211, 102, 0.35);
+      --upi-blue: #0088cc;
+      --upi-glow: rgba(0, 136, 204, 0.35);
       --text-main: #f8fafc;
       --text-muted: #94a3b8;
       --border-color: rgba(255, 255, 255, 0.08);
@@ -92,14 +94,13 @@
       border-radius: 999px;
     }
 
-    /* --- LAYOUT --- */
+    /* --- CONTAINER & HERO --- */
     .container {
       max-width: 1180px;
       margin: 0 auto;
       padding: 1.5rem 1rem;
     }
 
-    /* --- HERO BANNER --- */
     .hero {
       position: relative;
       background: linear-gradient(135deg, rgba(255, 59, 48, 0.12) 0%, rgba(255, 107, 0, 0.05) 50%, rgba(15, 23, 42, 0) 100%), var(--surface);
@@ -211,12 +212,6 @@
       font-size: 0.75rem;
     }
 
-    .area-tag:hover {
-      border-color: rgba(255, 255, 255, 0.2);
-      transform: translateY(-1px);
-    }
-
-    /* --- SECTION HEADINGS --- */
     .section-title {
       font-size: 1.4rem;
       font-weight: 700;
@@ -226,7 +221,6 @@
       justify-content: space-between;
     }
 
-    /* --- PRODUCT GRID --- */
     .product-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -305,10 +299,6 @@
       color: var(--text-muted);
       margin-bottom: 1.1rem;
       line-height: 1.4;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
     }
 
     .price-row {
@@ -384,10 +374,6 @@
       box-shadow: 0 6px 16px rgba(255, 59, 48, 0.5);
     }
 
-    .btn-add:active {
-      transform: translateY(0);
-    }
-
     /* --- FLOATING CART BAR --- */
     .cart-bar {
       position: fixed;
@@ -425,8 +411,8 @@
       color: var(--text-muted);
     }
 
-    .btn-whatsapp {
-      background: linear-gradient(135deg, var(--whatsapp), #1da851);
+    .btn-checkout {
+      background: linear-gradient(135deg, var(--accent), var(--accent-secondary));
       color: white;
       border: none;
       padding: 0.75rem 1.4rem;
@@ -438,15 +424,14 @@
       align-items: center;
       gap: 0.6rem;
       transition: all 0.2s ease;
-      box-shadow: 0 4px 14px var(--whatsapp-glow);
+      box-shadow: 0 4px 14px var(--accent-glow);
     }
 
-    .btn-whatsapp:hover {
+    .btn-checkout:hover {
       transform: translateY(-1px);
-      box-shadow: 0 6px 18px rgba(37, 211, 102, 0.5);
+      box-shadow: 0 6px 18px rgba(255, 59, 48, 0.5);
     }
 
-    /* --- MODAL --- */
     .modal {
       display: none;
       position: fixed;
@@ -454,7 +439,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(11, 15, 25, 0.85);
+      background: rgba(11, 15, 25, 0.88);
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
       justify-content: center;
@@ -474,7 +459,7 @@
       padding: 1.75rem;
       border-radius: var(--radius-lg);
       width: 100%;
-      max-width: 480px;
+      max-width: 500px;
       border: 1px solid var(--border-color);
       max-height: 90vh;
       overflow-y: auto;
@@ -497,8 +482,29 @@
     }
 
     .modal-header h2 {
-      font-size: 1.25rem;
+      font-size: 1.2rem;
       font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .step-indicator {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .step-pill {
+      flex: 1;
+      height: 4px;
+      background: var(--surface-card);
+      border-radius: 999px;
+      transition: background 0.3s;
+    }
+
+    .step-pill.active {
+      background: var(--accent);
     }
 
     .close-btn {
@@ -526,10 +532,118 @@
       margin-bottom: 0.4rem;
     }
 
+    /* UPI Gateway Specific Styles */
+    .upi-box {
+      background: var(--surface-card);
+      border: 1px dashed rgba(255, 255, 255, 0.2);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      text-align: center;
+      margin-bottom: 1.25rem;
+    }
+
+    .upi-amount-badge {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #38ef7d;
+      margin-bottom: 0.75rem;
+    }
+
+    .qr-container {
+      background: white;
+      padding: 0.8rem;
+      border-radius: var(--radius-sm);
+      display: inline-block;
+      margin-bottom: 1rem;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
+
+    .qr-container img {
+      display: block;
+      width: 160px;
+      height: 160px;
+    }
+
+    .vpa-copy-box {
+      display: flex;
+      align-items: center;
+      background: var(--bg);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: 0.4rem 0.6rem;
+      margin-top: 0.5rem;
+    }
+
+    .vpa-text {
+      flex: 1;
+      font-family: monospace;
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--text-main);
+      text-align: left;
+    }
+
+    .btn-copy {
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      color: #fff;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.35rem 0.65rem;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-copy:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .btn-upi-app {
+      background: linear-gradient(135deg, #0088cc, #005588);
+      color: white;
+      text-decoration: none;
+      border: none;
+      width: 100%;
+      padding: 0.75rem;
+      border-radius: var(--radius-sm);
+      font-weight: 700;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 4px 12px var(--upi-glow);
+    }
+
+    .btn-whatsapp {
+      background: linear-gradient(135deg, var(--whatsapp), #1da851);
+      color: white;
+      border: none;
+      padding: 0.8rem 1.4rem;
+      border-radius: var(--radius-md);
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      width: 100%;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 14px var(--whatsapp-glow);
+    }
+
+    .btn-whatsapp:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(37, 211, 102, 0.5);
+    }
+
     .modal-actions {
       display: flex;
       gap: 0.75rem;
-      margin-top: 1.5rem;
+      margin-top: 1.25rem;
     }
 
     .btn-cancel {
@@ -549,7 +663,32 @@
       color: var(--text-main);
     }
 
-    /* Mobile Responsive Tweaks */
+    /* Custom Toast Notification */
+    .toast-notification {
+      position: fixed;
+      top: 1rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(-100px);
+      background: #1e293b;
+      border: 1px solid var(--accent);
+      color: #fff;
+      padding: 0.8rem 1.5rem;
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-lg);
+      z-index: 200;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .toast-notification.active {
+      transform: translateX(-50%) translateY(0);
+    }
+
     @media (max-width: 600px) {
       .hero {
         padding: 1.75rem 1rem;
@@ -565,11 +704,6 @@
         bottom: 0.75rem;
       }
 
-      .btn-whatsapp {
-        padding: 0.65rem 1rem;
-        font-size: 0.85rem;
-      }
-
       .product-grid {
         grid-template-columns: 1fr;
       }
@@ -578,7 +712,12 @@
 </head>
 <body>
 
-  <!-- Header -->
+  <!-- Toast Notification Container -->
+  <div id="toast" class="toast-notification">
+    <span id="toast-icon">⚡</span>
+    <span id="toast-message">Notification</span>
+  </div>
+
   <header>
     <div class="brand">
       <span>🍗</span> Fresh Cuts
@@ -594,7 +733,7 @@
     <div class="hero">
       <div class="hero-badge">⚡ Express Delivery in Pune</div>
       <h1>Fresh &amp; Hygienic Meat Delivered</h1>
-      <p>Hand-picked, 100% antibiotic-free cuts delivered straight to your kitchen. Pick your preferred delivery slot (4 AM – 10 PM) and check out instantly on WhatsApp!</p>
+      <p>Hand-picked, 100% antibiotic-free cuts. Pay seamlessly via UPI (GPay, PhonePe, Paytm) and dispatch your order directly to WhatsApp!</p>
     </div>
 
     <!-- Delivery Area Display -->
@@ -619,70 +758,118 @@
       <span class="cart-total" id="cart-total">Total: ₹0</span>
       <span class="cart-subtext" id="cart-items-summary">No items in cart</span>
     </div>
-    <button class="btn-whatsapp" onclick="openCheckoutModal()">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
-      </svg>
-      <span>Order on WhatsApp</span>
+    <button class="btn-checkout" onclick="openCheckoutModal()">
+      <span>Proceed to Checkout</span>
     </button>
   </div>
 
-  <!-- Order Details Modal -->
   <div class="modal" id="checkout-modal">
     <div class="modal-content">
       <div class="modal-header">
-        <h2>Delivery &amp; Checkout</h2>
+        <h2 id="modal-title">1. Delivery Details</h2>
         <button class="close-btn" onclick="closeCheckoutModal()">&times;</button>
       </div>
 
-      <div class="form-group">
-        <label>Your Name *</label>
-        <input type="text" id="cust-name" placeholder="e.g. Rahul Sharma" required />
+      <div class="step-indicator">
+        <div class="step-pill active" id="pill-step-1"></div>
+        <div class="step-pill" id="pill-step-2"></div>
       </div>
 
-      <div class="form-group">
-        <label>Phone Number *</label>
-        <input type="tel" id="cust-phone" placeholder="e.g. 9876543210" required />
+      <!-- STEP 1: Delivery Details Form -->
+      <div id="step-1-container">
+        <div class="form-group">
+          <label>Your Name *</label>
+          <input type="text" id="cust-name" placeholder="e.g. Rahul Sharma" required />
+        </div>
+
+        <div class="form-group">
+          <label>Phone Number *</label>
+          <input type="tel" id="cust-phone" placeholder="e.g. 9876543210" required />
+        </div>
+
+        <div class="form-group">
+          <label>Select Delivery Area *</label>
+          <select id="cust-area" required>
+            <option value="">-- Choose your area --</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Preferred Delivery Time Slot (4 AM – 10 PM) *</label>
+          <select id="cust-timeslot" required>
+            <option value="">-- Choose a time slot --</option>
+            <option value="4:00 AM - 6:00 AM">4:00 AM - 6:00 AM (Early Morning Cut)</option>
+            <option value="6:00 AM - 8:00 AM">6:00 AM - 8:00 AM</option>
+            <option value="8:00 AM - 10:00 AM">8:00 AM - 10:00 AM</option>
+            <option value="10:00 AM - 12:00 PM">10:00 AM - 12:00 PM</option>
+            <option value="12:00 PM - 2:00 PM">12:00 PM - 2:00 PM</option>
+            <option value="2:00 PM - 4:00 PM">2:00 PM - 4:00 PM</option>
+            <option value="4:00 PM - 6:00 PM">4:00 PM - 6:00 PM</option>
+            <option value="6:00 PM - 8:00 PM">6:00 PM - 8:00 PM</option>
+            <option value="8:00 PM - 10:00 PM">8:00 PM - 10:00 PM (Late Night Cut)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Complete Address (Flat No., Building, Landmark) *</label>
+          <textarea id="cust-address" placeholder="e.g. Flat 302, Green Park Society, near Main Market" rows="3" required></textarea>
+        </div>
+
+        <div class="modal-actions">
+          <button class="btn-cancel" onclick="closeCheckoutModal()">Cancel</button>
+          <button class="btn-checkout" style="flex: 2; justify-content: center;" onclick="goToPaymentStep()">Proceed to Payment →</button>
+        </div>
       </div>
 
-      <div class="form-group">
-        <label>Select Delivery Area *</label>
-        <select id="cust-area" required>
-          <option value="">-- Choose your area --</option>
-        </select>
-      </div>
+      <!-- STEP 2: UPI Payment Gateway -->
+      <div id="step-2-container" style="display: none;">
+        <div class="upi-box">
+          <div class="cart-subtext" style="text-transform: uppercase; letter-spacing: 0.5px;">Payable Amount</div>
+          <div class="upi-amount-badge" id="upi-payable-amount">₹0</div>
 
-      <div class="form-group">
-        <label>Preferred Delivery Time Slot (4 AM – 10 PM) *</label>
-        <select id="cust-timeslot" required>
-          <option value="">-- Choose a time slot --</option>
-          <option value="4:00 AM - 6:00 AM">4:00 AM - 6:00 AM (Early Morning Cut)</option>
-          <option value="6:00 AM - 8:00 AM">6:00 AM - 8:00 AM</option>
-          <option value="8:00 AM - 10:00 AM">8:00 AM - 10:00 AM</option>
-          <option value="10:00 AM - 12:00 PM">10:00 AM - 12:00 PM</option>
-          <option value="12:00 PM - 2:00 PM">12:00 PM - 2:00 PM</option>
-          <option value="2:00 PM - 4:00 PM">2:00 PM - 4:00 PM</option>
-          <option value="4:00 PM - 6:00 PM">4:00 PM - 6:00 PM</option>
-          <option value="6:00 PM - 8:00 PM">6:00 PM - 8:00 PM</option>
-          <option value="8:00 PM - 10:00 PM">8:00 PM - 10:00 PM (Late Night Cut)</option>
-        </select>
-      </div>
+          <!-- Dynamic QR Code -->
+          <div class="qr-container">
+            <img id="upi-qr-code" src="" alt="Scan UPI QR Code" />
+          </div>
 
-      <div class="form-group">
-        <label>Complete Address (Flat No., Building, Landmark) *</label>
-        <textarea id="cust-address" placeholder="e.g. Flat 302, Green Park Society, near Main Market" rows="3" required></textarea>
-      </div>
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.5rem;">
+            Scan QR code with GPay, PhonePe, Paytm, or BHIM
+          </p>
 
-      <div class="modal-actions">
-        <button class="btn-cancel" onclick="closeCheckoutModal()">Cancel</button>
-        <button class="btn-whatsapp" style="flex: 2;" onclick="sendWhatsAppOrder()">Send Order via WhatsApp</button>
+          <div class="vpa-copy-box">
+            <span class="vpa-text" id="store-vpa">7499220437@upi</span>
+            <button class="btn-copy" onclick="copyUPI('7499220437@upi')">Copy UPI ID</button>
+          </div>
+        </div>
+
+        <!-- Direct UPI App Button (Mobile Deep-link) -->
+        <a id="upi-app-link" href="#" class="btn-upi-app">
+          <span>📲 Pay via Installed UPI App</span>
+        </a>
+
+        <div class="form-group">
+          <label>Enter Payment Ref / UTR / Txn ID *</label>
+          <input type="text" id="upi-utr" placeholder="e.g. 123456789012 (12-digit Ref ID)" required />
+        </div>
+
+        <div class="modal-actions">
+          <button class="btn-cancel" onclick="backToDeliveryStep()">← Back</button>
+          <button class="btn-whatsapp" style="flex: 2;" onclick="sendWhatsAppOrder()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+            </svg>
+            <span>Confirm &amp; Send Order</span>
+          </button>
+        </div>
       </div>
     </div>
   </div>
 
   <script>
-    // Updated WhatsApp Shop Number
+    // Configuration Variables
     const SHOP_WHATSAPP_NUMBER = "917499220437"; 
+    const STORE_UPI_ID = "7499220437@upi";
+    const STORE_NAME = "Fresh Cuts";
 
     // Deliverable Areas List
     const deliverableAreas = [
@@ -696,7 +883,7 @@
       "Chinchwad"
     ];
 
-    // Product List with High-Res Unsplash Images
+    // Product List with High-Res Images
     const products = [
       { 
         id: 1, 
@@ -744,6 +931,17 @@
 
     let cart = [];
 
+    // Notification Banner
+    function showNotification(msg, icon = "🛒") {
+      const toast = document.getElementById('toast');
+      document.getElementById('toast-message').textContent = msg;
+      document.getElementById('toast-icon').textContent = icon;
+      toast.classList.add('active');
+      setTimeout(() => {
+        toast.classList.remove('active');
+      }, 3000);
+    }
+
     // Render Deliverable Areas
     function renderDeliveryAreas() {
       const tagsContainer = document.getElementById('area-tags-container');
@@ -768,7 +966,7 @@
         <div class="product-card">
           <div class="img-wrapper">
             <span class="badge-fresh">Fresh Today</span>
-            <img src="${p.image}" alt="${p.name}" class="product-img" loading="lazy" />
+            <img src="${p.image}" alt="${p.name}" class="product-img" loading="lazy" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1e293b/ff3b30?text=Fresh+Cut';" />
           </div>
           <div class="product-info">
             <div>
@@ -821,12 +1019,19 @@
       }
 
       updateCartUI();
+      const weightStr = weight >= 1 ? `${weight}kg` : `${weight * 1000}g`;
+      showNotification(`Added ${product.name} (${weightStr}) to cart!`, "✅");
     }
 
-    // Update Cart Floating UI
+    // Calculate Total Cart Price
+    function getCartTotal() {
+      return cart.reduce((sum, item) => sum + (item.pricePerItem * item.qty), 0);
+    }
+
+    // Update Cart Floating Bar UI
     function updateCartUI() {
       const totalCount = cart.reduce((sum, item) => sum + item.qty, 0);
-      const totalPrice = cart.reduce((sum, item) => sum + (item.pricePerItem * item.qty), 0);
+      const totalPrice = getCartTotal();
 
       document.getElementById('cart-count').textContent = totalCount;
       document.getElementById('cart-total').textContent = `Total: ₹${totalPrice}`;
@@ -838,12 +1043,13 @@
       }
     }
 
-    // Modal Controls
+    // Modal & Multi-Step Logic
     function openCheckoutModal() {
       if (cart.length === 0) {
-        alert("Please add at least one product to your cart first.");
+        showNotification("Please add at least one product to your cart first.", "⚠️");
         return;
       }
+      backToDeliveryStep();
       document.getElementById('checkout-modal').style.display = 'flex';
     }
 
@@ -851,16 +1057,7 @@
       document.getElementById('checkout-modal').style.display = 'none';
     }
 
-    // Close modal on outer click
-    window.onclick = function(event) {
-      const modal = document.getElementById('checkout-modal');
-      if (event.target === modal) {
-        closeCheckoutModal();
-      }
-    };
-
-    // Send Order to WhatsApp
-    function sendWhatsAppOrder() {
+    function goToPaymentStep() {
       const name = document.getElementById('cust-name').value.trim();
       const phone = document.getElementById('cust-phone').value.trim();
       const area = document.getElementById('cust-area').value;
@@ -868,19 +1065,74 @@
       const address = document.getElementById('cust-address').value.trim();
 
       if (!name || !phone || !area || !timeslot || !address) {
-        alert("Please complete all required fields, including your preferred delivery slot.");
+        showNotification("Please fill in all delivery details before proceeding.", "❌");
         return;
       }
 
-      let message = `🛒 *NEW FRESH CUTS ORDER*\n`;
+      const total = getCartTotal();
+
+      // Setup Step 2 UI
+      document.getElementById('step-1-container').style.display = 'none';
+      document.getElementById('step-2-container').style.display = 'block';
+      document.getElementById('modal-title').textContent = '2. UPI Payment Gateway';
+      document.getElementById('pill-step-2').classList.add('active');
+
+      document.getElementById('upi-payable-amount').textContent = `₹${total}`;
+
+      // Construct UPI Deep Link URL
+      const upiString = `upi://pay?pa=${STORE_UPI_ID}&pn=${encodeURIComponent(STORE_NAME)}&am=${total}&cu=INR&tn=${encodeURIComponent('Meat Order Payment')}`;
+      
+      // Dynamic QR Code API
+      const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(upiString)}`;
+      document.getElementById('upi-qr-code').src = qrApiUrl;
+
+      // Set App Deep Link
+      document.getElementById('upi-app-link').href = upiString;
+    }
+
+    function backToDeliveryStep() {
+      document.getElementById('step-1-container').style.display = 'block';
+      document.getElementById('step-2-container').style.display = 'none';
+      document.getElementById('modal-title').textContent = '1. Delivery Details';
+      document.getElementById('pill-step-2').classList.remove('active');
+    }
+
+    // Copy UPI ID to clipboard
+    function copyUPI(text) {
+      const tempInput = document.createElement('input');
+      tempInput.value = text;
+      document.body.appendChild(tempInput);
+      tempInput.select();
+      document.execCommand('copy');
+      document.body.removeChild(tempInput);
+      showNotification("UPI ID copied to clipboard!", "📋");
+    }
+
+    // Send Order via WhatsApp
+    function sendWhatsAppOrder() {
+      const name = document.getElementById('cust-name').value.trim();
+      const phone = document.getElementById('cust-phone').value.trim();
+      const area = document.getElementById('cust-area').value;
+      const timeslot = document.getElementById('cust-timeslot').value;
+      const address = document.getElementById('cust-address').value.trim();
+      const utr = document.getElementById('upi-utr').value.trim();
+
+      if (!utr) {
+        showNotification("Please enter payment UTR / Reference ID.", "⚠️");
+        return;
+      }
+
+      let message = `🛒 *NEW ORDER - FRESH CUTS*\n`;
       message += `-------------------------\n`;
-      message += `*Customer Details:*\n`;
-      message += `👤 Name: ${name}\n`;
-      message += `📞 Phone: ${phone}\n`;
-      message += `📍 Area: ${area}\n`;
-      message += `⏰ Delivery Slot: ${timeslot}\n`;
-      message += `🏠 Address: ${address}\n\n`;
-      message += `*Order Items:*\n`;
+      message += `💳 *PAYMENT STATUS: PAID VIA UPI*\n`;
+      message += `🔖 Payment Ref / UTR: *${utr}*\n`;
+      message += `-------------------------\n`;
+      message += `👤 *Customer:* ${name}\n`;
+      message += `📞 *Phone:* ${phone}\n`;
+      message += `📍 *Area:* ${area}\n`;
+      message += `⏰ *Delivery Slot:* ${timeslot}\n`;
+      message += `🏠 *Address:* ${address}\n\n`;
+      message += `*Ordered Items:*\n`;
 
       let totalPrice = 0;
       cart.forEach((item, index) => {
@@ -891,9 +1143,9 @@
       });
 
       message += `-------------------------\n`;
-      message += `*Total Amount: ₹${totalPrice}*\n`;
+      message += `💰 *Total Amount Paid: ₹${totalPrice}*\n`;
       message += `-------------------------\n`;
-      message += `Please confirm my order and send payment details.`;
+      message += `Please confirm order receipt and schedule delivery.`;
 
       const encodedMsg = encodeURIComponent(message);
       const whatsappURL = `https://wa.me/${SHOP_WHATSAPP_NUMBER}?text=${encodedMsg}`;
@@ -902,9 +1154,19 @@
       closeCheckoutModal();
     }
 
-    // Initialize
-    renderDeliveryAreas();
-    renderProducts();
+    // Close Modal on Outside Click
+    window.onclick = function(event) {
+      const modal = document.getElementById('checkout-modal');
+      if (event.target === modal) {
+        closeCheckoutModal();
+      }
+    };
+
+    // Initialize Page
+    window.onload = function() {
+      renderDeliveryAreas();
+      renderProducts();
+    };
   </script>
 </body>
 </html>
